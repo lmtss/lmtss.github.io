@@ -49,10 +49,9 @@
     //let path = getQueryString('path');
     let path = window.location.search.substr(1).split('=')[1];
     if(path !== null){
-        console.log(path);
-        console.log(decodeURI(path));
+        path = decodeURI(path);
         jQuery.ajax({
-        url : 'markdown/' + decodeURI(path) + '.md',
+        url : 'markdown/' + path + '.md',
         success : function(data){
             document.title = '/' + path;
             document.getElementById('insert').innerHTML = marked(data);

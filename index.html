@@ -324,11 +324,9 @@
                 li.innerText = '[ ' + page.update + ' ] ';
                 let a = document.createElement('a');
                 a.innerText = page.name;
-                a.href = '/page.html?path=' + encodeURI(path + page.name);
+                a.href = '/page.html?path=' + path + page.name;
                 li.append(a);
                 ul.append(li);
-                console.log(encodeURI(path + page.name));
-                console.log(decodeURI(encodeURI(path + page.name)));
             }
 
         }
