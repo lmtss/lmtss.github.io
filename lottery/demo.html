@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+
+            #play{
+                display: none;
+                height: 100px;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="play">click</button>
+        <p id="wtf">WTFFFFFFFF</p>
+    </body>
+    <script id="wheelVS" type="x-shader/x-vertex">#version 300 es
+
+        in vec3 vertexPos;
+        uniform float time;
+        uniform mat4 mvpMat;
+
+        out vec2 uv;
+
+        void main(){
+            uv = (vertexPos.xy + 1.0) / 2.0;
+            gl_Position = mvpMat * vec4(vertexPos, 1.0);
+        }
+    </script>
+    <script id="wheelFS" type="x-shader/x-fragment">#version 300 es
+
+        precision highp float;
+
+        in vec2 uv;
+        uniform sampler2D metalTex;
+
+        out vec4 fragColor;
+
+        void main(){
+
+            vec3 lightDir = vec3(0.0, -1.0, 0.0);
+
+            float dis = length(uv - vec2(0.5, 0.5));
+            float circleRate = smoothstep(0.0, 0.005, 0.5 - dis);
+            vec3 col = texture(metalTex, uv).xyz * circleRate;
+
+            //float t = smoothstep(0.0, 0.01, 0.06 - dis) * 1000000000.0;
+            if(dis < 0.065 && dis > 0.03){//中间突起斜坡
+                //vec3 fakeDir = vec3()
+                col *= 0.8;
+
+                
+            }
+
+            
+            fragColor = vec4(col, circleRate);
+
+
+        }
+    </script>
+    <script id="particleVS" type="x-shader/x-vertex">#version 300 es
+
+        in vec4 vertexPos;
+        in vec3 vertexVelocity;
+
+        uniform int numRun;
+        uniform int prizeWidth;
+        uniform int prizeHeight;
+        uniform float time;
+        uniform vec2 resolution;
+        uniform mat4 mvpMat;
+
+        out vec4 feedbackVertexPos;
+        out vec3 feedbackVelocity;
+        out vec2 aTextureCoord;
+        out float type;
+        out float health;
+
+        vec2 ro(vec2 co, float deg){
+            return vec2(co.x*cos(deg) - co.y*sin(deg), co.x*sin(deg) + co.y*cos(deg));
+        }
+
+        float rand(vec2 co){
+            return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+        }
+
+        vec2 hash22(vec2 p){
+            p = vec2( dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));
+            return -1.0 + 2.0 * fract(sin(p)*43758.5453123);
+        }
+        float perlin_noise(vec2 p){
+            vec2 pi = floor(p);
+            vec2 pf = p - pi;
+            vec2 w = pf * pf * (3.0 - 2.0 * pf);
+            return mix(mix(dot(hash22(pi + vec2(0.0, 0.0)), pf - vec2(0.0, 0.0)),
+                            dot(hash22(pi + vec2(1.0, 0.0)), pf - vec2(1.0, 0.0)), w.x),
+                        mix(dot(hash22(pi + vec2(0.0, 1.0)), pf - vec2(0.0, 1.0)),
+                            dot(hash22(pi + vec2(1.0, 1.0)), pf - vec2(1.0, 1.0)), w.x),
+                        w.y);
+        }
+    
+        float noise_sum(vec2 p){
+            float f = 0.0;
+            p = p * 8.0;
+            f += 1.0000 * perlin_noise(p); p = 2.0 * p;
+            f += 0.5000 * perlin_noise(p); p = 2.0 * p;
+            f += 0.2500 * perlin_noise(p); p = 2.0 * p;
+            f += 0.1250 * perlin_noise(p); p = 2.0 * p;
+            f += 0.0625 * perlin_noise(p); p = 2.0 * p;
+            return f;
+        }
+        void main(){
+
+            //uv = (vertexPos.xy + 1.0) / 2.0;
+            int particleX = gl_VertexID % prizeWidth;
+            int particleY = gl_VertexID / prizeWidth;
+
+            vec2 prizeSize = vec2(prizeWidth, prizeHeight);
+
+            vec2 prizePos = vec2(- prizeSize.x / resolution.x, 0.0);
+
+            vec2 uv = vec2(particleX, particleY) / prizeSize;
+            vec2 finalPos = prizePos + uv * prizeSize / resolution * 2.0;
+
+
+            aTextureCoord = uv;
+            float noise = noise_sum(vertexPos.xy * 100.0 + time * 100.0);
+            //
+            health = vertexPos.w;
+            type = float(numRun);
+            if(numRun == 0){
+                health = vertexPos.w - 0.1;
+                /*if(health < 0.0){
+                    gl_Position = mvpMat * vec4(vertexPos.xy, 0.0, 1.0);
+                    float deg = rand(vertexPos.xy) * 3.14 * 2.0;
+                    feedbackVertexPos = vec4(0.5 * cos(deg), 0.5 * sin(deg), 0.0, 50.0);
+
+                }else{
+                    vec2 speed = vec2(0.0, 0.0) - vertexPos.xy;
+                    speed *= 0.02;
+                    noise = noise * 2.0 - 1.0;
+                    noise *= 1.57 ;
+
+                    vec2 centripetalAcceleration = ro(normalize(vertexPos.xy)*60.0, noise);
+                    speed = vertexVelocity.xy + centripetalAcceleration * 0.007;
+                    feedbackVelocity = vec3(speed, 0.0);
+
+                    vec2 pos = vertexPos.xy + speed * 0.007;
+        
+                    //speed = vec2(speed.x * cos(noise) - speed.y * sin(noise), speed.x * sin(noise) + speed.y * cos(noise));
+                    gl_Position = mvpMat * vec4(pos, 0.0, 1.0);
+                    feedbackVertexPos = vec4(pos, 0.0, health);
+                }*/
+                gl_Position = vec4(vertexPos.xyz, 1.0);
+                feedbackVertexPos = vertexPos;
+                gl_PointSize = 4.0;
+
+            }else{
+
+                float t = 4000.0 - time;
+                t = (t > 0.0)?t:0.0;
+                vec2 speed = (finalPos - vertexPos.xy) / (40.0 + t);
+    
+                
+    
+                noise = noise * 2.0 - 1.0;
+                noise *= 1.57 * t / 4000.0;
+    
+                speed = vec2(speed.x * cos(noise) - speed.y * sin(noise), speed.x * sin(noise) + speed.y * cos(noise));
+    
+    
+                float timePS = 1000.0 - time / 10.0;
+                timePS = (timePS > 0.0)?timePS:0.0;
+                gl_Position = vec4(vertexPos.xy + speed, 0.0, 1.0);
+                feedbackVertexPos = vec4(vertexPos.xy + speed, 0.0, health - 0.2);
+                gl_PointSize = 1.0 + 3.0 * timePS / 1000.0;
+            }
+            feedbackVelocity = vertexVelocity;
+ 
+        }
+    </script>
+    <script id="particleFS" type="x-shader/x-fragment">#version 300 es
+
+        precision highp float;
+
+        in vec2 aTextureCoord;
+        in float type;
+        in float health;
+        uniform sampler2D metalTex;
+        out vec4 fragColor;
+
+        vec2 hash22(vec2 p){
+            p = vec2( dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));
+            return -1.0 + 2.0 * fract(sin(p)*43758.5453123);
+        }
+
+        void main(){
+
+            if(type == 0.0){
+                fragColor = vec4(hash22(aTextureCoord), 0.5, 1.0);
+            }else{
+                vec3 col = texture(metalTex, aTextureCoord).xyz;
+                vec3 fCol = vec3(hash22(aTextureCoord), 0.5);
+                fragColor = vec4(mix(col, fCol, (health > 0.0 ? health : 0.0) / 50.0), 1.0);
+            }
+           
+
+
+        }
+    </script>
+    <script type="module" src="index.js"></script>
+</html>

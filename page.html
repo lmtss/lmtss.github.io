@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="page.css">
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <div class="menu">
+                    <ul>
+                        <li>
+                            <a href="/">INDEX</a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+            <main id="insert">
+                <p>
+                    loading.................
+                </p>
+                    
+            </main>
+            <footer>
+            
+            </footer>
+        </div>
+        
+    </body>
+<script>
+    function getQueryString(name) {
+        console.log(window.location.search);
+        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        };
+        return null;
+    }
+
+    //let path = getQueryString('path');
+    let path = window.location.search.substr(1).split('=')[1];
+    if(path !== null){
+        console.log(path);
+        console.log(decodeURI(path));
+        jQuery.ajax({
+        url : 'markdown/' + decodeURI(path) + '.md',
+        success : function(data){
+            document.title = '/' + path;
+            document.getElementById('insert').innerHTML = marked(data);
+        }
+    })
+    }
+
+</script>
+</html>
