@@ -62,3 +62,8 @@ header p{text-align:left;margin:0}footer{margin-bottom:20px}
 
 
 footer{color:var(--text-color);border-top:var(--border);margin:20px auto 15px;padding-top:10px;text-align:right}
+
+img{
+    background-color: whitesmoke;
+    max-width: 100%;
+}
