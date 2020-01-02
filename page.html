@@ -6,7 +6,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <link rel="stylesheet" href="page.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css">
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/clike/clike.min.js"></script>            
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     </head>
     <body>
@@ -46,6 +49,40 @@
         return null;
     }
 
+    const main = document.getElementById('insert');
+    
+    const codeMirrorTable = {
+        cpp : "text/x-c++src"
+    }
+
+    const initCodeMirror = function(){
+        console.log("mode");
+        let domPres = main.getElementsByTagName('pre');
+        for(let i = 0; i < domPres.length; i++){
+            let domCodes = domPres[i].getElementsByTagName('code');
+            if(domCodes.length !== 0){
+                let domCode = domCodes[0];
+                let mode = codeMirrorTable[domCode.className.split('-')[1]];
+                console.log(mode);
+                if(mode != null){
+                    CodeMirror(domPres[i], {
+                        value : domCode.innerText,
+                        lineNumbers: true,
+                        foldGutter: true,
+                        lineWrapping: true,
+                        mode : mode,
+                        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                    });
+                    domCode.style.display = 'none';
+                    //domPres[i].remove(domCode);
+
+                }
+            }
+            
+            
+        }
+    }
+
     //let path = getQueryString('path');
     let path = window.location.search.substr(1).split('=')[1];
     if(path !== null){
@@ -54,7 +91,10 @@
         url : 'markdown/' + path + '.md',
         success : function(data){
             document.title = '/' + path;
-            document.getElementById('insert').innerHTML = marked(data);
+            //main.onload = initCodeMirror;
+            main.innerHTML = marked(data);
+            initCodeMirror();
+            
         }
     })
     }
