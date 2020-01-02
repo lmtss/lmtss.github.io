@@ -67,3 +67,7 @@ img{
     background-color: whitesmoke;
     max-width: 100%;
 }
+
+p > code{
+    color: #00c1c1
+}
