@@ -24,6 +24,7 @@ body{
     font-family:"Source Code Pro",monospace;
     font-size:12.5px;color:var(--text-color);
     text-align:left;
+
     line-height:1.5 !important
     
 }
@@ -67,7 +68,9 @@ img{
     background-color: whitesmoke;
     max-width: 100%;
 }
-
+p{
+    font-family: "微软雅黑","黑体",serif;
+}
 p > code{
     color: #00c1c1
 }
