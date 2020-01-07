@@ -84,7 +84,11 @@
             
         }
     }
-
+    const importMathJax = function(){
+        let script = document.createElement('script');
+        document.body.append(script);
+        script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default";
+    }
     //let path = getQueryString('path');
     let path = window.location.search.substr(1).split('=')[1];
     if(path !== null){
@@ -96,7 +100,7 @@
             //main.onload = initCodeMirror;
             main.innerHTML = marked(data);
             initCodeMirror();
-            
+            importMathJax();
         }
     })
     }
