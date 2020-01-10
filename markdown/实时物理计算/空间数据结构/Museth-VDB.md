@@ -19,4 +19,19 @@ cache-coherent 缓存一致性
 (4) 布尔运算  
 (5) 对各种算法的高效实现  
 所有的这些操作对于应用于流体、窄带水平集、体模型的动态稀疏数据结构来说是必要的。  
-`Leaf nodes.` 这些节点，
+`Leaf nodes.` 这些节点是最低层的块，并且在同一个深度。他们将空间高效地分为不重叠的域，每个域沿着每个轴有\\(2^{Log_2\omega}\\)个体素，\\(2^{Log_2\omega}\ =\ 1,2,3....\\)。典型的配置是\\(2^{Log_2\omega}\ =\ 3\\)，按照8-8-8的块。我们限制叶节点(和内节点)的维数为2的幂，借此，我们能在遍历树的时候进行快速的位运算。  
+```cpp
+template <class Value, int Log2X, int Log2Y=Log2X, int Log2Z=Log2Y>
+class LeafNode { 
+    static const int sSize=1<<Log2X+Log2Y+ Log2Z, sLog2X=Log2X, sLog2Y=Log2Y , sLog2Z=Log2Z; 
+    union LeafData { 
+        streamoff offset;//out -of-core streaming 
+        Value* values;//temporal buffers 
+    } mLeafDAT;//direct access table 
+    BitMask <sSize > mValueMask;//active states 
+    [BitMask <sSize > mInsideMask]; //optional for LS 
+    uint64_t mFlags;//64 bit flags 
+};
+```  
+在上面的代码中可以看出，叶节点的维度在编译期决定，节点的大小是\\(1\ll \sum_ \omega sLog_2\omega\\)。叶节点将体素数据值编入Direct Access Table，将活跃的体素拓扑编入direct access bit-mask。  
+![](/img/VDB-tree.webp "VDB-tree")
