@@ -1,4 +1,5 @@
 翻译学习论文 [VDB: High-Resolution Sparse Volumes with Dynamic Topology](http://www.museth.org/Ken/Publications_files/Museth_TOG13.pdf)  
+这篇论文感觉上主要是从CPU编程的角度写，不过思想肯定可以用到GPU上了，比如NVIDIA的GDVB。按我的理解，就是八叉树+均匀网格，叶子节点是均匀网格。
 ## 词汇
 cache-coherent 缓存一致性  
 是指在采用层次结构存储系统的计算机系统中，保证高速缓冲存储器中数据与主存储器中数据相同机制。
@@ -33,5 +34,11 @@ class LeafNode {
     uint64_t mFlags;//64 bit flags 
 };
 ```  
-在上面的代码中可以看出，叶节点的维度在编译期决定，节点的大小是\\(1\ll \sum_ \omega sLog_2\omega\\)。叶节点将体素数据值编入Direct Access Table，将活跃的体素拓扑编入direct access bit-mask。  
-![](/img/VDB-tree.webp "VDB-tree")
+在上面的代码中可以看出，叶节点的维度在编译期决定，节点的大小是\\(1\ll \sum_ \omega sLog_2\omega\\)。叶节点将体素数据值编入Direct Access Table，将活跃的体素拓扑编入direct access bit-mask。重要的是要注意，尽管位掩码的固定大小等于LeafNode的大小，但由于以下原因，值数组的大小mLeafDAT.values是动态的。  
+![](/img/VDB-tree.webp "VDB-tree")  
+## 2.4 Putting it All Together
+任何空间数据结构的单一配置都不能声称能够同样好地处理所有应用程序，并且VDB也不例外，因此，它是专为自定义设计的。节点及其参数的不同组合会改变树的深度和分支因子，从而影响诸如可用网格分辨率，适应性，访问性能，内存占用量甚至硬件效率等特性。
+## 3 VDB 访问算法
+到目前为止，我们仅专注于VDB数据结构，该结构仅占我们贡献的一半，可以说是更简单的一半。另一半涉及有效的算法和优化技巧的工具箱，用于导航和操作此动态数据结构。我们将在本节中重点介绍树访问算法，并在下一节中讨论更多针对特定应用的技术。  
+## 3.1 随机访问
+最基本最有挑战的就是对任意体素的随机访问。最糟糕的情况下，每个体素访问都需要完整的从上到下的遍历。
