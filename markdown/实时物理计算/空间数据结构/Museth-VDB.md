@@ -59,4 +59,16 @@ unsigned int rootHash = ((1<<Log2N)-1) & (
     rootKey [2]*83492791
 );
 ```  
-这三个常数是质数,^是XOR操作，&是AND操作。我们将Teschner [[2003]()]提出的哈希函数做了改进，将取模操作改为AND操作。
+这三个常数是质数,^是XOR操作，&是AND操作。我们将Teschner [[2003]()]提出的哈希函数做了改进，将取模操作改为AND操作。接下来，如果internalOffset处的mChildMask的位为off，则(x,y,z)位于常量图块内，因此从mInternalDAT返回该图块值，并终止遍历。否则，将从mInternalDAT中提取子节点，并继续遍历直到在InternalNode的mChildMask中遇到零位或达到LeafNode。相应的，LeafNode的直接访问偏移(direct access offset)的计算速度甚至更快。  
+```cpp
+unsigned int leafOffset = 
+    (
+        (x&(1<<sLog2X)-1) << Log2Y+Log2Z
+    ) + 
+    (
+        (y&(1<<sLog2Y)-1) << Log2Z
+    ) + 
+    (
+        z&(1<<sLog2Z) - 1
+    );
+```
