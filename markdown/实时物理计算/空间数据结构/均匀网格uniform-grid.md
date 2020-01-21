@@ -10,7 +10,7 @@ next[id] = last_particle_id;
 $$
 id = [\frac{x - x_{origin}}{d}] + [\frac{y - y_{origin}}{d}] \times K + [\frac{z - z_{origin}}{d}] \times K \times L
 $$
-
+用cell ID当作键值排序，不过排序算法实现起来比较困难，也未必比原子操作的方式快。
 ## 排序 + z-order
 ## 链表法中的数据清空
 每一step后都要清空均匀网格的值，实践表明，不应该每一个要清空的值都分配一个线程，一个线程清除多个值会比较好。在一些情况下，比如网格总数和粒子总数相同，可以让head和next在一个kernel函数中清除。使用128-128-128的均匀网格测试，时间平均减少1ms。  
