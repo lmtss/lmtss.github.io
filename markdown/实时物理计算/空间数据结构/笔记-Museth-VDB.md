@@ -40,3 +40,5 @@ class InternalNode {
 };
 ```   
 ## 访问
+## GVDB
+GVDB是NVIDIA实现的gpu上的VDB。  

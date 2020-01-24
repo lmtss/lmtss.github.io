@@ -1,5 +1,5 @@
 翻译学习论文 [VDB: High-Resolution Sparse Volumes with Dynamic Topology](http://www.museth.org/Ken/Publications_files/Museth_TOG13.pdf)  
-这篇论文感觉上主要是从CPU编程的角度写，不过思想肯定可以用到GPU上了，比如NVIDIA的GDVB。按我的理解，就是八叉树+均匀网格，叶子节点是均匀网格。
+这篇论文感觉上主要是从CPU编程的角度写，不过思想肯定可以用到GPU上了，比如NVIDIA的GDVB。类似八叉树。
 ## 词汇
 cache-coherent 缓存一致性  
 是指在采用层次结构存储系统的计算机系统中，保证高速缓冲存储器中数据与主存储器中数据相同机制。
@@ -57,7 +57,7 @@ class InternalNode {
     int32_t mX, mY, mZ;//origin of node 
 };
 ```   
-就如看到的，中间节点的构造和叶节点有一部分相同。然而，不像叶节点，中间节点同时记录值和树的拓扑，也就是说，有着指向其他中间节点或叶节点的指针。相应的拓扑在位掩码mChildMask中进行了紧凑编码，并且mValueMask用于指示图块值是否处于活动状态。请注意，由于分支因子Log2w在编译时是固定的，因此mInternalDAT，mChildMask和mValueMask的大小也是固定的。
+就如看到的，中间节点的构造和叶节点有一部分相同。然而，不像叶节点，中间节点同时记录值和树的拓扑，也就是说，有着指向其他中间节点或叶节点的指针。相应的拓扑在位掩码mChildMask中进行了紧凑编码，并且mValueMask用于指示图块值是否处于活动状态。请注意，由于分支因子Log2w在编译时是固定的，因此mInternalDAT，mChildMask和mValueMask的大小也是固定的。需要强调的是，不同层次的中间节点可以有不同的分支因子，这样就能增加灵活性以适应所有形状的树。这是重要的，因为树结构会影响内存占用量和计算性能，这会在章节5.1中讲述。  
 ## 2.4 Putting it All Together
 任何空间数据结构的单一配置都不能声称能够同样好地处理所有应用程序，并且VDB也不例外，因此，它是专为自定义设计的。节点及其参数的不同组合会改变树的深度和分支因子，从而影响诸如可用网格分辨率，适应性，访问性能，内存占用量甚至硬件效率等特性。
 ## 3 VDB 访问算法
