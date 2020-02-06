@@ -12,6 +12,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/clike/clike.min.js"></script>            
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
     </head>
     <body>
         <div class="container">
@@ -100,7 +101,7 @@
             //main.onload = initCodeMirror;
             main.innerHTML = marked(data);
             initCodeMirror();
-            importMathJax();
+            //importMathJax();
         }
     })
     }
