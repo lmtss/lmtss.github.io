@@ -15,7 +15,9 @@
     --code-color-9: #05ca05;--code-color-10: #888888;--code-color-11: #555555;
     --code-color-12: #800080;--code-color-13: #00d4d4;--code-color-14: #00c1c1;
     --code-color-15: #ed9d13;--code-color-16: #1e90ff;--code-color-17: #800000;
-    --code-color-18: #bbbbbb
+    --code-color-18: #bbbbbb;
+
+    --head-color: var(--code-color-18);
 }
 body{
     background-color:var(--background-color);
@@ -29,7 +31,7 @@ body{
     
 }
 
-h1,h2,h3,h4,h5,h6{font-size:12.5px;margin:0px;margin-top:22px;font-weight:bold;color:var(--text-color)}
+h1,h2,h3,h4,h5,h6{font-size:12.5px;margin:0px;margin-top:22px;font-weight:bold;color:var(--head-color)}
 p,ul,ol{margin:0px;color:var(--text-color)}
 li{
     margin-left: 15px;
