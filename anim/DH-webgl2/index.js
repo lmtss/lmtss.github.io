@@ -20,7 +20,7 @@ class DarkHole{
         this.pNum = num;
 
         this.animID = null;
-        
+        this.hasFog = hasFog;
 
         let gl = createGL(canvas);
         gl.clearColor(0.0, 0.0, 0.0, 1);
@@ -74,6 +74,7 @@ class DarkHole{
 
         // 雾效果
         if(this.hasFog){
+            console.log('fog');
             this.fogProgram = createProgram(this.gl, document.getElementById("fogVS").innerHTML, document.getElementById("fogFS").innerHTML);
             let arr2 = [-1,1, -1,-1, 1,1, 1,-1];
             this.fogABO = new akABO(this.gl, new Float32Array(arr2), 2, gl.getAttribLocation(this.fogProgram, "pos"));

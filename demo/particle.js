@@ -2,7 +2,9 @@ import {DarkHole} from "../anim/DH-webgl2/index.js"
 
 
 
-var anim = new DarkHole();
+var anim = new DarkHole({
+    hasFog : true
+});
 //document.body.insertBefore(anim.DOM(), document.getElementById('container'));
 
 anim.DOM().style.position = 'fixed';

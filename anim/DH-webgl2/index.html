@@ -238,7 +238,8 @@
                     w.y);
     }
 
-    float noise_sum_abs3(vec3 p){float f = 0.0;p = p * 7.0;
+    float noise_sum_abs3(vec3 p){
+        float f = 0.0;p = p * 7.0;
         f += 1.0000 * abs(perlin_noise3(p)); p = 2.0 * p;
         f += 0.5000 * abs(perlin_noise3(p)); p = 2.0 * p;
         f += 0.2500 * abs(perlin_noise3(p)); p = 2.0 * p;
