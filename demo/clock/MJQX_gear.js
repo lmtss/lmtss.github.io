@@ -898,8 +898,15 @@ MJQX_gear.prototype.test = function () {
 MJQX_gear.prototype.animate = function () {
     var ctx = this.ctx;
 
-    ctx.fillStyle = this.backgroundcolor;
+    //ctx.fillStyle = this.backgroundcolor;
+    //ctx.fillRect(0,0,this.screen.width,this.screen.height);
+
+    var grd = ctx.createLinearGradient(0,0,0,this.screen.height);
+    grd.addColorStop(0,"black");
+    grd.addColorStop(1,"rgba(77,31,1,1)");
+    ctx.fillStyle = grd;
     ctx.fillRect(0,0,this.screen.width,this.screen.height);
+
 
     this.SubGearUpdate();
     this.SubGearRender();
