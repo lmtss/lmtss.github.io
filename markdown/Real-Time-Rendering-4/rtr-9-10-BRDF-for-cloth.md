@@ -28,6 +28,8 @@ $$
 $$
 D(m)=\frac{}{}
 $$
-## 微纤维布料
+## 9.10.3 微纤维布料
 这种建模方式十分相近于头发，所以一定程度上可以参考14.7.2。这种想法相当于假设表面被一维的线所覆盖。  
 比如，神海4使用了Kajiya-Kay BRDF来建模丝绸、丝绒的高光。  
+Dreamworks [348](https://research.dreamworks.com/wp-content/uploads/2018/07/38-0045-deshmukh-Edited.pdf) [1937]()使用相对简单并容易调参的模型来描述纤维。  
+[Sadeghi 1526](http://graphics.ucsd.edu/~henrik/papers/practical_microcylinder_appearance_model_for_cloth_rendering.pdf) 
