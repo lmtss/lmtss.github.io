@@ -1,0 +1,36 @@
+## depthfade
+在移动端，使用$scenedepth-pixeldepth$计算时，发现水面上有黑块，随后发现是因为在水下缺少物体的情况下，$scenedepth$的值和PC上表现不一，会导致$saturate(scenedepth-pixeldepth)$为0，进而透明度为0，也就变成了clearcolor的颜色  
+
+后来的另一种情况，并没有缺失背景，但是透明度为0，水面消失。原因是$\frac{scenedepth - pixeldepth}{dist}$中的$dist$参数过大导致的，可能由于玄妙的精度问题
+## 马赛克
+初步看以为是UV按time位移，而time过大导致的。目前用`custom`节点计算UV
+## uniform变量
+从cpu传过来的变量，在未勾选全精度的情况下，确实会是half，这一点可以在编译的glsl代码里面看出，如此的话，就算使用custom节点也不管用  
+转移到VS计算custom UV也不行，可以看GLSL，传过来的参数仍没有highp
+## uniform 变量是怎么填充到模板的
+## 材质模板
+## landscape
+只支持三个自定义UV  
+详情见`LandscapeVertexFactory.ush`
+## 粒子播放序列帧
+`ParticleSpriteVertexFactory.ush` 中 `GetVertexFactoryIntermediates`  
+## 纹理压缩
+### 扰动、位移类型的纹理压缩
+像是ETC等方式，会使用块状压缩，这应该是扰动效果出现块的原因。毕竟默认是为了颜色来准备的
+### 纹理解码发生在何处？
+纹理是否能够仅仅消耗RG通道相应的带宽?如果不能的话，法线压缩的意义是仅仅是省内存？
+## 在Custom节点采样
+* 普通的
+tex.Sample(texSampler, uv)  
+texture(tex, uv)  
+等同于直接用`TextureSample`节点
+* 法线
+直接用`TextureSample`采样法线，映射到`[-1,1]`并且将解码压缩纹理
+* 关于采样器  
+在GL代码里面，并没有采样器增加的问题
+## UE4如何保证CustomUV是高精度  
+在`MaterialTemplate.ush`里的`GetMaterialCustomizedUVs`函数  
+在`HLSLMaterialTranslator.h`的`Translate`函数里填充
+## 法线
+在编写水面的时候，发现计算后的法线不需要连接到`reflect`节点，直接连到最终的`normal`引脚即可  
+这个地方在`HLSLMaterialTranslator.h`-812处(4.24)有注释，会提前把`PixelParametersInput.Normal`赋值，这样以后使用像素法线的时候，就都是最终结果了
