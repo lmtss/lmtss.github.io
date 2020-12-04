@@ -10,7 +10,11 @@ $$
 $$
 W_{N}^{kn}=e^{-j\frac{2\pi}{N}kn}
 $$
-对应于FFT里面的$e^{-iwt}$  
+对应于FT里面的$e^{-iwt}$  
+$$
+\omega_n^k=e^{2\pi\frac{k}{n}i}
+$$  
+也是复数概念中的单位根
 ## IDFT
 $$
 x(n)=\frac{1}{N}\sum_{k=0}^{N-1}X(k)W_N^{-kn}

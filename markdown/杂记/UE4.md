@@ -34,3 +34,26 @@ texture(tex, uv)
 ## 法线
 在编写水面的时候，发现计算后的法线不需要连接到`reflect`节点，直接连到最终的`normal`引脚即可  
 这个地方在`HLSLMaterialTranslator.h`-812处(4.24)有注释，会提前把`PixelParametersInput.Normal`赋值，这样以后使用像素法线的时候，就都是最终结果了
+## 位置和缩放
+## Compute Shader
+使用`ES31`预览会报错，无法找到shader  
+修改`ShouldCache`和`ShouldCompilePermutation`，让其根据是否支持`ES3.1`来判断即可
+## 死亡粒子特效
+### cs
+cs读取mesh，  
+```
+if 当前vertex的local position处在某个位置区间
+    赋给粒子buffer[index]该vertex的位置
+```  
+无法计算`index`
+### transformback
+令粒子初始化位置为mesh位置,随后按照local position逐渐飞走  
+最简单的实现
+### transformback 2.0
+在渲染时，`Draw(start, num)`，调节start  
+需要排序
+### cs 2.0
+## uniform buffer
+是否有限制？
+## rgba float
+能否储存负数？
