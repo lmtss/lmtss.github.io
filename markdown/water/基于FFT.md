@@ -54,3 +54,22 @@ $$
 ## sync
 `GroupMemoryBarrierWithGroupSync`  
 `GroupMemoryBarrier`
+
+# 尝试优化
+在PC上，256x256，仅计算高度图，需0.08ms
+* 波谱20us
+* IFFT 约29us x 2
+* 绘制到RT约8us  
+
+为啥波谱的计算消耗是绘制RT的两倍多？
+## ps与cs
+cs在输出结果到纹理的时候，不比ps快，ps对于z-order之类的格式有优化  
+所以，如果计算较为简单，那么cs的瓶颈就会在输出到纹理部分，于是就会失去对比ps的优势  
+在使用ps计算发现并copy的情况下，读取纹理5次，renderdoc显示约13us，仍小于cs计算波谱
+## 改为一个线程两个输出
+在PC上效果不显著
+### Lut
+Lut改为$(log_2N, \frac{N}{2})$大小  
+## lut 改为rgba8
+在256x256时，8位二进制可以表示足够的数，但是需要对浮点数进行解码
+## 最后一步输出改为8位

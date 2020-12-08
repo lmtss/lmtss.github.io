@@ -1,6 +1,7 @@
 # emmm
 `mean` 平均值  
-`deviation` 方差 
+`deviation` 方差   
+`sinusoid` 正弦  
 
 # 4 经验模型
 ## 4.1 Gerstner波
@@ -41,6 +42,7 @@ $$
 D(\vec{x},t)=\sum_k -i\frac{\vec{k}}{k}\widetilde{h}(\vec{k,t})exp(i\vec{k}\cdot \vec{x})
 $$  
 根据此向量场，水平上的点的位置是$\vec{x} + \lambda D(\vec{x},t)$  
+$\lambda$是个方便的参数来缩放位移向量，而不是来自于前面的推导。  
 使用雅可比矩阵判断浪尖白沫:  
 $$
 J(\vec{x}) = J_{xx}J_{yy}-J_{xy}J_{yx}
