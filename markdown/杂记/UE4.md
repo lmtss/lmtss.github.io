@@ -56,4 +56,18 @@ if 当前vertex的local position处在某个位置区间
 ## uniform buffer
 是否有限制？
 ## rgba float
-能否储存负数？
+能否储存负数？  
+没有问题，不过用蓝图的drawmaterialtorendertarget时，别忘了设置 "允许自发光为负数"
+## 奇怪的耗时
+使用IFFT计算海面的时候，gpu profiler上有一段时间消耗不知道来自哪里
+几个疑点
+* compute shader输出的资源需要同步，就是说memory barrier  
+但是渲染出的效果并没有问题
+* PSO
+### 测试
+* spectrum-> IFFT x2 -> copy -> spectrum -> IFFT x2  
+即是说，不做第二次的copy，奇怪的耗时不会出现在worldtick里面，存在mobilescenerenderer里面，但不再任何一个项里面  
+
+* 在使用ES3.1 PIE运行的情况下有可能消失
+* 完全取消插件中的计算，单纯用蓝图`draw material to rt`，发现也存在这个耗时，所以和compute shader无关
+* 完全不用蓝图的tick，发现其实还是有这个耗时
