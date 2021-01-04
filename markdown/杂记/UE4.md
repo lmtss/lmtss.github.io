@@ -71,3 +71,5 @@ if 当前vertex的local position处在某个位置区间
 * 在使用ES3.1 PIE运行的情况下有可能消失
 * 完全取消插件中的计算，单纯用蓝图`draw material to rt`，发现也存在这个耗时，所以和compute shader无关
 * 完全不用蓝图的tick，发现其实还是有这个耗时
+# G8
+PF_G8不是指使用g通道，而是指grayscale 8，所以PF_G8仍是R8

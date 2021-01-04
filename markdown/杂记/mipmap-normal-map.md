@@ -23,4 +23,4 @@ $$
 # 其他方案
 [RTR-9-13-normal filter](https://gunay-pi.com/chapter-9-physically-based-shading/13/)  
 [NDF](https://zhuanlan.zhihu.com/p/69380665)  
-[楚留香](https://zhuanlan.zhihu.com/p/35369939)
+[楚留香](https://zhuanlan.zhihu.com/p/35369939)  

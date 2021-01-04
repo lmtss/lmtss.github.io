@@ -186,7 +186,9 @@ $$
 ## 竖条
 纹理中出现很多像素值为nan，分布呈竖条  
 查明，是初始频谱菲利普值在$|\vec{K}|$过小时，值过大导致的，因为在频谱的全局$A$项设置了10  
-
+## 横条
+在blur泡沫的时候，存在横条  
+原因是传入的texelSize存在问题，用了lambda表达式，但是变量捕获用的是&
 ## 某一时刻所有频率的高度都为0
 ## mipmap
 实时计算的mipmap有问题，出现奇妙的瑕疵点  
@@ -207,3 +209,7 @@ UE4中有CS生成和api生成两种方式
 * 改变采样normal之后的操作
   * 这个方案很好地消除了高光走样
 * 自己生成mipmap(暂不使用)
+# 替换编辑器中RT的RHI资源
+## 在RenderThread中替换
+* GetRenderTargetResource() 出现异常,改为GameThread_xxx
+* 用FTextureRenderTargetResourse TextureRHI赋值，只会改变在编辑器中打开RT的预览界面的显示
