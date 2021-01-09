@@ -73,3 +73,9 @@ if 当前vertex的local position处在某个位置区间
 * 完全不用蓝图的tick，发现其实还是有这个耗时
 # G8
 PF_G8不是指使用g通道，而是指grayscale 8，所以PF_G8仍是R8
+# 编译shader错误
+在打安卓包的时候，报出了几个shader的语法错误，但在编辑器运行的时候不会报错
+* 结构体中的函数
+* 忘记加`[loop]`不展开循环
+* RHS 和 LHS问题，左侧是vec2，右侧是scalar 
+  * RHS 是 right hand side右手边的意思
