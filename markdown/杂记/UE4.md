@@ -79,3 +79,5 @@ PF_G8不是指使用g通道，而是指grayscale 8，所以PF_G8仍是R8
 * 忘记加`[loop]`不展开循环
 * RHS 和 LHS问题，左侧是vec2，右侧是scalar 
   * RHS 是 right hand side右手边的意思
+# CombineLUTs
+发现这一个pass每帧都在运行
