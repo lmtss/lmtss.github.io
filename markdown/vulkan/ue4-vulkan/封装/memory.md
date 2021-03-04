@@ -15,9 +15,17 @@
 `FVulkanSubresourceAllocator`替代`FBufferAllocation`  
 `FVulkanAllocation`替代`FBufferSuballocation`  
 总的关系还是很像的
-
+最上层管理器改名叫`FMemoryManager`，简单易懂
 # 分配方式
 总的来说，有两种分配方式  
 ## buffer
-buffer会
+buffer会使用`FMemoryManager::AllocateBufferPooled`方法进行分配  
+在这种分配方式中，管理器对不同的`使用方式usageFlag`和`大小尺寸`维护不同数量的`FVulkanSubresourceAllocator`，也就是实际`vkDeviceMemory`  
+|||||
+|---|---|---|---|
+|size0|usage_1|usage_4||
+|size1|usage_0|||
+|size2|usage_4|usage_2|usage_1|
+分配时，先找合适尺寸的符合usageFlag的`FVulkanSubresourceAllocator`，若有且能分配就分配，否则新创建一个`FVulkanSubresourceAllocator`
 ## image
+这种情况，虽然最终仍是通过`FVulkanSubresourceAllocator`分配，但中间隔了一层`FVulkanResourceHeap`，每一种`memoryType`对应一个`FVulkanResourceHeap`  
