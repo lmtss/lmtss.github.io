@@ -22,7 +22,8 @@ void FVulkanCommandListContext::RHIDrawPrimitive(uint32 BaseVertexIndex, uint32 
 ```  
 在UE4中，draw之前会调用一次`PrepareForDraw`，其中就会调用`vkCmdSetViewport`   
 # RenderPass
-创建GraphicsPipeline的时候，也需要输入renderpass作为参数，那么是否意味着，输出到rgba8和输出到rgba16是两个不同的pipeline
+创建GraphicsPipeline的时候，也需要输入renderpass作为参数，那么是否意味着，输出到rgba8和输出到rgba16是两个不同的pipeline  
+以及在录制cmd时，renderpass不同，是否需要不同的cmdbuffer
 # RenderPass Attachment samples
 # VkPipelineInputAssemblyStateCreateInfo
 如其名，IA阶段的信息  
