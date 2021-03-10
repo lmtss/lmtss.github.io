@@ -17,7 +17,14 @@
 总的关系还是很像的
 最上层管理器改名叫`FMemoryManager`，简单易懂
 # 分配方式
-总的来说，有两种分配方式  
+## FDeviceMemoryManager
+分配`DeviceMemory`  
+会维护一个`FFreeBlock`列表，存放的是调用`FDeviceMemoryManager::Free`时，想要释放的内存。调用`FDeviceMemoryManager::Free`时，并不一定调用`vkFreeMemory`，有可能会被存起来再利用  
+调用`FDeviceMemoryManager::Alloc`时，会先检查`FFreeBlock`列表是否有合适的内存  
+
+对于子分配，总的来说，有两种分配方式  
+## FVulkanSubresourceAllocator
+进行子分配时，使用`FRange`来辅助分配
 ## buffer
 buffer会使用`FMemoryManager::AllocateBufferPooled`方法进行分配  
 在这种分配方式中，管理器对不同的`使用方式usageFlag`和`大小尺寸`维护不同数量的`FVulkanSubresourceAllocator`，也就是实际`vkDeviceMemory`  
@@ -26,6 +33,6 @@ buffer会使用`FMemoryManager::AllocateBufferPooled`方法进行分配
 |size0|usage_1|usage_4||
 |size1|usage_0|||
 |size2|usage_4|usage_2|usage_1|
-分配时，先找合适尺寸的符合usageFlag的`FVulkanSubresourceAllocator`，若有且能分配就分配，否则新创建一个`FVulkanSubresourceAllocator`
+分配时，先找合适尺寸的符合usageFlag的`FVulkanSubresourceAllocator`，若有且能分配(`TryAllocate2`函数)就分配，否则新创建一个`FVulkanSubresourceAllocator`
 ## image
 这种情况，虽然最终仍是通过`FVulkanSubresourceAllocator`分配，但中间隔了一层`FVulkanResourceHeap`，每一种`memoryType`对应一个`FVulkanResourceHeap`  
