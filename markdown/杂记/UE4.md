@@ -81,3 +81,7 @@ PF_G8不是指使用g通道，而是指grayscale 8，所以PF_G8仍是R8
   * RHS 是 right hand side右手边的意思
 # CombineLUTs
 发现这一个pass每帧都在运行
+
+# 精度问题
+用了一个天空球材质，其中用了`dot(view,sunDir)`的思路画出太阳  
+这种方式需要较高的精度，可能需要用到小数点后5位以上来计算，尤其是太阳轮廓较小时
