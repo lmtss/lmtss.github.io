@@ -18,4 +18,14 @@ E(\vec{n})=c_1L_{22}(x^2-y^2)+c_3L_{20}z^2+c_4L_{00}-c_5L_{20}  \\
 +2c_1(L_{2-2}xy+L_{21}xz+L_{2-1}yz)\\
 +2c_2(L_{11}x+L_{1-1}y+L_{10}z)
 $$  
-实际上点乘做法就是将系数做了个变换，从上面的$\sum C_{lm}Y_{lm}(\vec{n})$的形式换成点乘，节省指令
+实际上点乘做法就是将系数做了个变换，从上面的$\sum C_{lm}Y_{lm}(\vec{n})$的形式换成点乘，节省指令  
+
+## 传参
+有个独立天光的需求  
+* 球谐系数  
+* IBL  
+
+不过还是直接改`FSkyLightSceneProxy`比较合理  
+`RendererScene.cpp`里`FScene::SetSkyLight`  
+发现还有一个`SkyLightStack`  
+`SkyLightComponent::CreateRenderState_Concurrent`
