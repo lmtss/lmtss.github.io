@@ -39,4 +39,17 @@ UI材质是`translucent`模式渲染
 将UI材质换成`additive`，结果变得正确了，然而背景一直是纯黑的，按理来说两者应该是一样的才对  
 查看usf文件，发现在使用`additive`时，输出是`float4(color * alpha, 0.0)`  
 于是尝试材质编辑器中rgb输出100，选用`translucent`，发现结果等于`1.0 * opacity`  
-呃，很显然是数值超过了1，被截断了，竟是如此简单
+呃，很显然是数值超过了1，被截断了，竟是如此简单  
+原来在使用`translucent`的时候，为了还原，材质中除以了`alpha`，这样在alpha混合后，预期会变成`color + (1 - a) * sceneColor`的效果，但是却因为除以`a`之后超过了1导致截断，最后颜色就变成了`a + (1 - a) * sceneColor`，尤其当a很小时，这个问题就尤为严重，特效会消失不见  
+最后改成`Premultiplied Alpha`
+# 不修改引擎
+虽然可以在scenecapture上加后处理，但需要改引擎  
+另一个方式是在UI材质上局部做一个tonemapper  
+## 简易方法
+UE4的shader文件中有一个简易tonemapper函数(注释)，ACES的拟合曲线，其配置的曲线参数顺便也把gamma做了
+## gamma校正
+查看UI材质的shader，会发现他做了校正
+## 采样
+后处理时，应该是`point sample`，处理后在UI上线性过滤  
+而在UI材质中处理，则是线性过滤后进行处理    
+从这一点来看，当UI中图的尺寸与RT不同时，高光处容易错误，尤其是边缘、尖端处
