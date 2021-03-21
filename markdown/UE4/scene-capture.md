@@ -26,9 +26,17 @@
 在不支持HDR的机器里面，可能还是会运行这一步，会额外做一次copy  
 拓展`GShaderSourceModeDefineName`  
 # UI
-把capture渲染结果放到UI上的话，半透明物体渲染结果和场景中可能天差地别  
-简单地想，将rgba纹理画到UI上，和画物体是有区别的  
-比如一个`additive`的物体渲染到RT之后，使用`translucent`或预乘模式画到UI上，其结果是一定不同的。但是当画到RT上的物体很多时，会同时存在多种混合方式，而将RT绘制到UI上时则只能选择一种  
-## 补救措施
+半透明物体渲染到RT再渲染到UI上时，出现了渲染错误  
+## 引擎相关代码
+`SlateElementPixelShader.usf`  
+
+## 一个例子
 有一个材质在场景中有着较明显的边缘光(`dot(n,v)这种`)，边缘处十分明显高亮，但渲染到UI上之后，高亮变得不明显  
-UI材质是`translucent`模式渲染
+UI材质是`translucent`模式渲染  
+当强制输出opacity为1时，边缘高光表现正常，但显然不能这么做。  
+那么按照`color * a + sceneColor * (1 - a)`的公式逆推，是否让`color`提前除以`a`即可?  
+结果看起来是不正确的  
+将UI材质换成`additive`，结果变得正确了，然而背景一直是纯黑的，按理来说两者应该是一样的才对  
+查看usf文件，发现在使用`additive`时，输出是`float4(color * alpha, 0.0)`  
+于是尝试材质编辑器中rgb输出100，选用`translucent`，发现结果等于`1.0 * opacity`  
+呃，很显然是数值超过了1，被截断了，竟是如此简单
