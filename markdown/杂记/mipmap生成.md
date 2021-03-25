@@ -5,3 +5,6 @@
 ## OpenGL
 `glGenerateMipmap` 是gl的接口，但是gl并不要求具体的实现方式  
 [stackOverflow](https://stackoverflow.com/questions/23017317/mipmap-generation-in-opengl-is-it-hardware-accelerated)  
+# 偶然看到的
+[single pass mipmap](https://zhuanlan.zhihu.com/p/263387791)  
+声称只有最后很短的一部分时间中，工作线程少  
