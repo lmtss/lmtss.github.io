@@ -11,3 +11,7 @@
 ## 如何计算曲线的坐标
 曲线接受`Points`输入，所以生成一个`geometry`，编辑属性即可  
 `point`节点(attribute expression)接受一个几何体，然后赋值即可
+## 设置uv
+添加`uv texture`节点后，可以看到属性多了三列`uv 0,1,2`  
+大概是为了通用于体积材质，uv是三维的  
+`uv texture`节点可以选择是在Point上添加还是在vertices上添加
