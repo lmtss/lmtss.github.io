@@ -8,3 +8,7 @@
 # 偶然看到的
 [single pass mipmap](https://zhuanlan.zhihu.com/p/263387791)  
 声称只有最后很短的一部分时间中，工作线程少  
+问题是如何进行全局的同步，而不只是group内部的同步
+
+# Generate Mipmaps unsupported on this OpenGL version
+不只是显式调用会出发generate mipmaps，也要注意RT是否勾选了自动生成mipmaps

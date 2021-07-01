@@ -22,9 +22,10 @@
 在一台非mali的机器上，shader定义了，`UE_EXT_shader_framebuffer_fetch`宏  
 而mali机器中，则没有  
 这个宏在`OpenGLShaders.cpp`中加入shader，而是否加入则是通过判断`ExtensionString`中是否有fetch拓展(`ProcessExtensions函数`)  
-编译的shader，glsl
+对`FramebufferFetch`函数的定义是在运行时的cpp中，向shader中添加宏定义
 ## 4.26是否有改动?
-
+在后处理部分，如果scenecolorformat为R11G11B10，则会使用深度纹理  
+不过并非是每一步都用深度纹理，比如景深的输入是一个`R16F`纹理，这是在`Sunmask`步骤生成的
 # 使用depth frame buffer fetch
 考虑到性能，可以尝试用frame buffer fetch获取深度缓冲  
 需要支持相应的拓展  
