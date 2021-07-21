@@ -50,9 +50,40 @@ UI材质是`translucent`模式渲染
 ## 简易方法
 UE4的shader文件中有一个简易tonemapper函数(注释)，ACES的拟合曲线，其配置的曲线参数顺便也把gamma做了
 ## gamma校正
-查看UI材质的shader，会发现他做了校正
+查看UI材质的shader，会发现他做了校正  
+从渲染流程上看，UI绘制在Tonemap之后，于是在绘制的时候，做一个local的矫正  
+但是，如果UI需要绘制一个已经经过了Tonemap的RT，那么就不应该用这个矫正
+`Engine/Shaders/Private/SlateElementPixelShader.usf`  
+`Engine/Shaders/Private/GammaCorrectionCommon.ush`  
+`ApplyGammaCorrection`  
+```cpp
+/**
+ * @param GammaCurveRatio The curve ratio compared to a 2.2 standard gamma, e.g. 2.2 / DisplayGamma.  So normally the value is 1.
+ */
+half3 ApplyGammaCorrection(half3 LinearColor, half GammaCurveRatio)
+{
+	// Apply "gamma" curve adjustment.
+	half3 CorrectedColor = pow(LinearColor, GammaCurveRatio);
+
+	#if MAC
+		// Note, MacOSX native output is raw gamma 2.2 not sRGB!
+		CorrectedColor = pow(CorrectedColor, 1.0/2.2);
+	#else
+		#if USE_709
+			// Didn't profile yet if the branching version would be faster (different linear segment).
+			CorrectedColor = LinearTo709Branchless(CorrectedColor);
+		#else
+			CorrectedColor = LinearToSrgb(CorrectedColor);
+		#endif
+	#endif
+
+	return CorrectedColor;
+}    
+```
+
+不过在搞定相关问题后，还是有bug，发现是后处理调色lut导致(0,0,0)变成了非零的值
 ## 采样
-后处理时，应该是`point sample`，处理后在UI上线性过滤  
+后处理时，应该相近于`point sample`，处理后在UI上线性过滤  
 而在UI材质中处理，则是线性过滤后进行处理    
 从这一点来看，当UI中图的尺寸与RT不同时，高光处容易错误，尤其是边缘、尖端处  
 当我用1024尺寸RT测试时，将其画在250尺寸的UI上，发现一些暗处被亮处'污染'了，而将其画在1024的UI上，这种现象会消失  
