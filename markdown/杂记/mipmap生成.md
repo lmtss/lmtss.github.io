@@ -10,5 +10,13 @@
 声称只有最后很短的一部分时间中，工作线程少  
 问题是如何进行全局的同步，而不只是group内部的同步
 
-# Generate Mipmaps unsupported on this OpenGL version
-不只是显式调用会出发generate mipmaps，也要注意RT是否勾选了自动生成mipmaps
+# UE4 Generate Mipmaps unsupported on this OpenGL version
+不只是显式调用会出发generate mipmaps，也要注意RT是否勾选了自动生成mipmaps  
+调用`GenerateMips`会异常  
+应该使用`FGenerateMips::Execute`，让他使用Compute Shader生成Mipmaps，不过引擎代码中会判断是否使用CS来生成，而很多api会返回false，只有D3D12和Vulkan为True(4.24)  
+而在新的版本中，opengl会判断，如果不支持自带的GenerateMips，则返回true
+## Support Generate Mipmap
+是否支持Api层面的GenerateMipmap，是写死在代码中的，`OpenGLES2`为默认false，而安卓是继承的`ES2`类。
+## 生成Mipmap的函数
+4.24中，会将`GL_TEXTURE_MAX_LEVEL`设为0，不清楚原因  
+在最新版本中修改为按照纹理设置的`NumMips`来设置了
