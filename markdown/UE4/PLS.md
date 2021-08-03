@@ -28,5 +28,22 @@ ue5已经有相应的代码(`GSupportsPixelLocalStorage`)了，只不过我用�
 赋值于`Engine/Source/Runtime/OpenGLDrv/Private/OpenGLDevice.cpp`  
 在`Engine/Source/Runtime/OpenGLDrv/Private/OpenGLES.cpp`从扩展字符串中获取  
 ### shader编译
-### 后处理cpp
+使用`framebufferfetch`拓展时，ue4会在跨平台编译shader的代码中处理相关内容  
+毕竟usf是hlsl  
+在UE5中也有[相关代码](https://github.com/EpicGames/UnrealEngine/blob/5.0.0-early-access-2/Engine/Source/Developer/ShaderFormatOpenGL/Private/GlslBackend.cpp)，但看起来只是给延迟渲染用的  
+glsl应该是在HLSLCC里面做的处理，而metal而不是  
+[交叉编译相关文档](https://docs.unrealengine.com/4.26/zh-CN/ProgrammingAndScripting/Rendering/ShaderDevelopment/HLSLCrossCompiler/)  
+使用`make_intrinsic_genType`函数添加`PLS`操作为内置函数  
+参考`FrameBufferFetch`相关代码  
+```cpp
+//添加内置指令
+make_intrinsic_genType(ir, State, FRAMEBUFFER_FETCH_ES2, ir_invalid_opcode, IR_INTRINSIC_FLOAT, 0, 4, 4);
+//...
+//判断是否使用了FrameBufferFetch
+const bool bUsesFrameBufferFetch = Frequency == HSF_PixelShader && UsesUEIntrinsic(ir, FRAMEBUFFER_FETCH_ES2);
+```  
+
+### 运行时的cpp部分 
 时间长了，opengl怎么用也有点忘了  
+我的手机一开启就崩溃，android studio还看不到异常  
+一台程序上表面支持PixelLocalStorage的手机也是崩溃
