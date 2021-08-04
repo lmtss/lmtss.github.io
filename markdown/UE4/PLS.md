@@ -42,8 +42,21 @@ make_intrinsic_genType(ir, State, FRAMEBUFFER_FETCH_ES2, ir_invalid_opcode, IR_I
 //判断是否使用了FrameBufferFetch
 const bool bUsesFrameBufferFetch = Frequency == HSF_PixelShader && UsesUEIntrinsic(ir, FRAMEBUFFER_FETCH_ES2);
 ```  
-
+不过UE5(5.0.0-early-access-2)的代码中，并未用make_intrinsic_genType处理PLS和MRTFetch，而是实现了一个函数`AddIntrisicVecParam`  
+亲测在使用make_intrinsic_genType处理读取操作时表现正常，而处理写入操作的时候，写入操作会消失，可能是优化掉了？  
 ### 运行时的cpp部分 
 时间长了，opengl怎么用也有点忘了  
-我的手机一开启就崩溃，android studio还看不到异常  
-一台程序上表面支持PixelLocalStorage的手机也是崩溃
+使用这个拓展需要
+`glEnable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);`  
+代码在`Engine/Source/Runtime/OpenGLDrv/Private/OpenGLRenderTarget.cpp`  
+### 测试
+华为mate20，测试Distort步骤，用性能狗测试带宽，并没有丝毫的带宽减少，md  
+可能性
+
+* Distort本来符合某些硬件上的机制，比如cache
+  * 修改了Merge步骤的uv，改为(1-uv)，带宽仍未变化，不像时cache的问题，不是tile based引起
+* 性能狗的问题
+  * 将Distort的第一个Pass的RT的尺寸改为一半，发现仍未有带宽数值变化，这或许说明和tile memory无关了
+  * 将第一个Pass的RT的format从rgba8改为RGBA16F，带宽增加
+    * 或许有针对32bit缓冲区的优化？
+* PLS的实现，手机厂商的问题
