@@ -49,7 +49,7 @@ const bool bUsesFrameBufferFetch = Frequency == HSF_PixelShader && UsesUEIntrins
 使用这个拓展需要
 `glEnable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);`  
 代码在`Engine/Source/Runtime/OpenGLDrv/Private/OpenGLRenderTarget.cpp`  
-### 测试
+## 测试
 华为mate20，测试Distort步骤，用性能狗测试带宽，并没有丝毫的带宽减少，md  
 可能性
 
@@ -59,4 +59,9 @@ const bool bUsesFrameBufferFetch = Frequency == HSF_PixelShader && UsesUEIntrins
   * 将Distort的第一个Pass的RT的尺寸改为一半，发现仍未有带宽数值变化，这或许说明和tile memory无关了
   * 将第一个Pass的RT的format从rgba8改为RGBA16F，带宽增加
     * 或许有针对32bit缓冲区的优化？
+  * 换成arm的streamline之后，也没有显示memory相关的变动
 * PLS的实现，手机厂商的问题
+
+结果是因为`Transaction Elimination`，我的测试demo中摄像机不动，特效也不随着时间变化，也就没了写回内存的消耗  
+耗时上  
+用RenderDoc显示使用了PLS后耗时增加，md
