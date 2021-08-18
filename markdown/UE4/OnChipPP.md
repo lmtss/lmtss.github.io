@@ -13,5 +13,10 @@ framebuffer fetch通常用来在不更换pass的情况下快速获取对应的�
 ## FBF 后处理
 难点仍是format的不同，即是说tonemap输出到backbuffer(LDR)上，而景深(HDR)输出到R11G11B10上面  
 如果用FBF，也就意味着需要使用MRT，索引0为backbuffer，索引1为R11G11B10，景深输出带索引1  
-顾虑在于，过去使用MRT时，检测到，即使是不去resolve索引1的RT，也产生了带宽消耗
-## Pixel Local Storage
+顾虑在于，过去使用MRT时，检测到，即使是不去resolve索引1的RT，也产生了带宽消耗  
+并且backbuffer color应该没法放到自定义的MRT中  
+
+## MRT+FBF
+原来Mali不支持MRT+FBF，怪不得他的FramebufferFetch拓展不是通用的  
+所以使用MRT+FBF时，Mali就要用PLS  
+这么来看，基本可以照着UE的移动端延迟来写，MRT FBF 和 PLS是同一个变体，在runtime的部分添加对应的宏
