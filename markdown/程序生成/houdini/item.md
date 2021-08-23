@@ -15,3 +15,5 @@
 添加`uv texture`节点后，可以看到属性多了三列`uv 0,1,2`  
 大概是为了通用于体积材质，uv是三维的  
 `uv texture`节点可以选择是在Point上添加还是在vertices上添加
+## 封装
+`SubNetwork`
