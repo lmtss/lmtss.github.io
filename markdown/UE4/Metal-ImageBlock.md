@@ -56,3 +56,4 @@ UE4中，设置RenderPassDesc的地方在`MetalStateCache.cpp`中
 ## Support
 按照官方给出的文档，在GPUFamilyApple4支持ImageBlock  
 判断的代码一般写在`MetalRHI.cpp`
+## 
