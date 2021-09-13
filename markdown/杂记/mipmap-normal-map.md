@@ -24,3 +24,13 @@ $$
 [RTR-9-13-normal filter](https://gunay-pi.com/chapter-9-physically-based-shading/13/)  
 [NDF](https://zhuanlan.zhihu.com/p/69380665)  
 [楚留香](https://zhuanlan.zhihu.com/p/35369939)  
+# cubemap
+采样cubemap的时候，同样出现了锯齿  
+那么思路就是计算cubemap的mipmap值，以及乘数。大概就是修改`k * sample(uv, level)`，中的`k`和`level`  
+改变`k`的想法是，如果一个像素表现的是远处的物体，那么这个像素的颜色更可以理解为多个采样的平均，尤其是在物体凹凸不平的情况下，实际应有的颜色值应该比简单的采样cubemap得出的值要小  
+但是否应该这样？因为mipmap也反应了采样的平均  
+按照上面[英伟达的短文](https://developer.download.nvidia.com/whitepapers/2006/Mipmapping_Normal_Maps.pdf)，应使用一个$log_2\sigma$的函数来计算，不过没给出公式  
+不过在网上随便找一个在线函数绘图网站，观察$log_2\sigma$图像，能发现这个函数在$|N|$大于0.5时小于0  
+UE4中采样反射捕获的代码也是类似，根据$log_2(roughness)$来计算  
+$MaxMip-1+MipScale*log_2(r) - RoughestMip$  
+其中$MipScale$为1.2，$RoughestMip$为1
