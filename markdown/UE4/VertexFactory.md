@@ -50,4 +50,5 @@ kq
 ## 如何创建一个UPrimitiveComponent
 在编辑器中创建c++类的时候，没有创建UPrimitiveComponent的选项。选择创建一个`ActorComponent`然后改为继承UPrimitiveComponent应该是可以的  
 ## 看不见
-新写出来的component并不是一直是可视的，在编辑器中点击物体的话倒是会显示
+新写出来的component并不是一直是可视的，在编辑器中点击物体的话倒是会显示  
+应该是被剔除了，需要写Component的`CalcBounds`方法

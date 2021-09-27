@@ -6,3 +6,6 @@
 可以推断`hlslcc`有问题？  
 ## 修改GlslBackend
 写变量的时候，添加特殊的前缀，类似`GLSLWO_xxx`这样，然后在GlslBackend判断字符串。但是`var->name`似乎不是正确的，使用`strncmp`判断不正确。
+# OpenGLShader
+这个cpp文件在编译ComputeShader上有问题，在4.24.1中有bug，会导致compute shader报错，需要删掉`LinkComputeShader`中VerifyCompiledShader  
+不过，在新版本UE中已经改了
