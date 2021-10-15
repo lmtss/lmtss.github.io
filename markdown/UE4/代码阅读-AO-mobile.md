@@ -2,7 +2,7 @@
 移动端加入的GTAO，相当于使用上一帧的深度计算  
 # HORIZONSEARCH_INTEGRAL_PIXEL_SHADER
 GTAOHorizonSearchIntegralPS  
-这个`Horizon`，一开始还以为是横向的意思，事实上指的是什么不清楚，大概是说，这个search是基于屏幕的，就像是水平于屏幕一样搜索。或许是相对于随着法线搜索来说的？  
+这个`Horizon`，一开始还以为是横向的意思，事实上指的应该是`HBAO`中的`Horizon`  
 ## SearchForLargestAngleDual
 给定了屏幕方向(2D)，进行ray-march,找到最大角度   
 ```

@@ -1,0 +1,1 @@
+`Practical Realtime Strategies for Accurate Indirect Occlusion`  
