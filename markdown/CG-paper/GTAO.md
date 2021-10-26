@@ -20,3 +20,4 @@ $$
 $$
 L_r(x,\vec{\omega _o})=L_i\frac{\rho (x)}{\pi}A(x)\int _{H^2}V(x,\vec{\omega _i})cos(\vec n,\vec {\omega _i})d\vec{\omega _i}=
 $$  
+其中$A(x)$是环境光遮蔽项
