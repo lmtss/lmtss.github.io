@@ -38,4 +38,19 @@ $$
 A(x)=\frac{1}{\pi}\int _0^{\pi}\int _{-\frac{\pi}{2}}^{\frac{\pi}{2}}V(\phi,\theta)cos(\theta - \gamma)^{+}|sin(\theta)|d\theta d\phi
 $$  
 其中，  
-* $\theta$是
+* $\theta$是沿着(?)视方向$\omega _0$
+* $\gamma$是法线$\vec{n}$和视方向$\omega _0$之间的夹角
+* $cos(\theta)^{+}=max(cos(\theta), 0)$
+* $V(\phi,\theta)$是可见性衰减函数  
+注意着不像HBAO，这个积分写成了辐射度量正确的形式，考虑了透视系数。这个坐标系也做出了修改，改为以相对于视方向$\omega _0$的$(\phi,\theta)$而不是切向量，这意味着需要$abs$。考虑一个二元可见性函数$V(\phi, \theta)$，当$\theta$在水平角$\theta _1(\phi)$和$\theta _2(\phi)$上方时返回 1，反之为 0(见`图3`)。  
+![](/img/GTAO-figure-3.png)  
+`图3：`  
+因此没有逐采样的衰减，由此公式可以写成  
+$$
+A(x)=\frac{1}{\pi}\int _{0}^{\pi}\underbrace{\int _{\theta _1(\phi)} ^{\theta _2(\phi)}cos(\theta - \gamma)^+|sin(\theta)|d\theta}_{\hat{a}} d\phi
+$$   
+根据给定的水平角$\theta _1$和$\theta _2$我们能通过如下公式计算积分$\hat{a}$  
+$$
+\hat{a}(\theta _1, \theta _2, \gamma)=\frac{1}{4}(-cos(2\theta _1-\gamma)+cos(\gamma)+2\theta _1sin(\gamma))\\
++\frac{1}{4}(-cos(2\theta _2-\gamma)+cos(\gamma)+2\theta _2sin(\gamma))
+$$  
