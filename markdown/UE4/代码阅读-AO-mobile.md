@@ -53,5 +53,20 @@ float TakeSmallerAbsDelta(float left, float mid, float right)
 这个函数的作用是从左侧变化和右侧变化中选择绝对值较小的那个，用来增强重构法线的质量，相交采样3次来说效果更好  
 [参考1-stackoverflow](https://stackoverflow.com/questions/37627254/how-to-reconstruct-normal-from-depth-without-artifacts-on-edge)  
 [参考2](https://wickedengine.net/2019/09/22/improved-normal-reconstruction-from-depth/)    
-[参考3](https://atyuwen.github.io/posts/normal-reconstruction/)
+[参考3](https://atyuwen.github.io/posts/normal-reconstruction/)  
+## GetRandomVector
+用来得到随机的slice角度
+## ComputeInnerIntegral
+应该是对slice的积分，对应论文中如下公式  
+$$
+\hat{a}(\theta _1, \theta _2, \gamma)=\frac{1}{4}(-cos(2\theta _1-\gamma)+cos(\gamma)+2\theta _1sin(\gamma))\\
++\frac{1}{4}(-cos(2\theta _2-\gamma)+cos(\gamma)+2\theta _2sin(\gamma))
+$$   
+根据之前算出来的$\theta_1$和$\theta_2$计算切片的积分  
+UE4也有用lut的方式来替代这里的计算
+
 ## CalculateGTAO
+* 1 调用`GetRandomVector`获取一个随机的方向
+* 2 `SearchForLargestAngleDual`进行ray-march得到$\theta_1$和$\theta_2$
+* 3 `ComputeInnerIntegral`计算slice的积分
+* 4 循环2和3，加和
