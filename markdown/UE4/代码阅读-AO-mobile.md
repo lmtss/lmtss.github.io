@@ -55,7 +55,11 @@ float TakeSmallerAbsDelta(float left, float mid, float right)
 [参考2](https://wickedengine.net/2019/09/22/improved-normal-reconstruction-from-depth/)    
 [参考3](https://atyuwen.github.io/posts/normal-reconstruction/)  
 ## GetRandomVector
-用来得到随机的slice角度
+用来得到随机的slice角度  
+一开始以为是过去常用的魔法数字构建的噪声   
+实际上用了InterleavedGradientNoise，交叉梯度噪声，学到了  
+[使命召唤 http://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare](http://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare)  
+[https://bartwronski.com/2016/10/30/dithering-part-three-real-world-2d-quantization-dithering/](https://bartwronski.com/2016/10/30/dithering-part-three-real-world-2d-quantization-dithering/)  
 ## ComputeInnerIntegral
 应该是对slice的积分，对应论文中如下公式  
 $$
