@@ -53,4 +53,4 @@ $$
 $$
 \hat{a}(\theta _1, \theta _2, \gamma)=\frac{1}{4}(-cos(2\theta _1-\gamma)+cos(\gamma)+2\theta _1sin(\gamma))\\
 +\frac{1}{4}(-cos(2\theta _2-\gamma)+cos(\gamma)+2\theta _2sin(\gamma))
-$$  
+$$   

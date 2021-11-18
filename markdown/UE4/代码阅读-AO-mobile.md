@@ -18,7 +18,8 @@ loop end
 取最大角度时，并非直接用max，而是如下 
 ```cpp
 BestAng.x = (Ang > BestAng.x) ? Ang : lerp(Ang, BestAng.x, Thickness);
-```
+```  
+但是在计算uv的offset的时候，有一个`UVOffset.y *= -1`，没搞懂为什么，需要测试
 ## GetNormal
 获取视空间法线，从法线buffer中获取，或者利用深度重建  
 重建的代码大概如下  
@@ -67,10 +68,33 @@ $$
 +\frac{1}{4}(-cos(2\theta _2-\gamma)+cos(\gamma)+2\theta _2sin(\gamma))
 $$   
 根据之前算出来的$\theta_1$和$\theta_2$计算切片的积分  
-UE4也有用lut的方式来替代这里的计算
+UE4也有用lut的方式来替代这里的计算  
+同时还要计算一个权重  
+```cpp
+	// Given the angles found in the search plane we need to project the View Space GBuffer Normal onto the plane defined by the search axis and the View Direction and perform the inner integrate
+
+	//Plane指的是切片对应的平面，这个normal就是这个平面的法线
+	half3 PlaneNormal = normalize(cross(ScreenDir, ViewDir));
+	half3 Perp = cross(ViewDir, PlaneNormal);
+
+	//视空间法线在平面的投影
+	half3 ProjNormal = ViewSpaceNormal - PlaneNormal * dot(ViewSpaceNormal, PlaneNormal);
+
+	//这个长度就作为权重乘到slice的积分上
+	half LenProjNormal = length(ProjNormal) + 0.000001f;
+	half RecipMag = 1.0f / (LenProjNormal);
+
+	half CosAng = dot(ProjNormal, Perp) * RecipMag;
+```
+
+
+
 
 ## CalculateGTAO
 * 1 调用`GetRandomVector`获取一个随机的方向
 * 2 `SearchForLargestAngleDual`进行ray-march得到$\theta_1$和$\theta_2$
 * 3 `ComputeInnerIntegral`计算slice的积分
 * 4 循环2和3，加和
+
+
+    
