@@ -1,3 +1,15 @@
+<head>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['$','$']]
+            }
+        });
+    </script>
+</head>  
+
 `Practical Realtime Strategies for Accurate Indirect Occlusion`  
 # 1 介绍
 环境光遮蔽是一种对全局光照的近似，它对小遮挡物产生的阴影进行了建模。  
