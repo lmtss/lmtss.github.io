@@ -22,9 +22,7 @@
 * `GTSO：` 
 # 3 Background & Overview
 来自点$x$的反射辐射度$L_r(x,\omega _o)$可以被建模为：  
-$$
-L_r(x,\omega _o)=\int _{H^2}L(x,\omega _i)f_r(x,\omega _i,\omega _o)max(dot(n,\omega _i))d\omega _i
-$$  
+$$L_r(x,\omega _o)=\int _{H^2}L(x,\omega _i)f_r(x,\omega _i,\omega _o)max(dot(n,\omega _i))d\omega _i$$  
 环境光遮蔽[ZIK98]近似了这个公式，通过介绍一系列假设  
 * 所有$x$周围的表面是完全吸收的(并不反弹光)
 * 所有的光来自于无限远的均匀白色环境光
