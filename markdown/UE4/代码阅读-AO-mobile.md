@@ -164,6 +164,7 @@ for (y = -2; y <= 2; y++)
 		{
 			// Get the bilateral weight. This is a function of the difference in height between the plane equation and the base depth
 			// Compare the Z at this sample with the gradients 
+			// 这里并不是用中心的深度和像素深度做差，而是用当前遍历的像素对应的平面的深度和原深度做差
 			half SampleZDiff = abs(PlaneZ - SampleZAndAO.x);
 
 			Weight = 1.0f - saturate(SampleZDiff*1000.0f);
@@ -178,4 +179,4 @@ for (y = -2; y <= 2; y++)
 }
 SumAO /= SumWeight;
 ```  
-  
+这里用5x5的像素构建了一个平面，用构建的这个平面上的深度来求权重  
