@@ -1,5 +1,6 @@
 `Engine/Shaders/Private/PostProcessAmbientOcclusionMobile.usf`  
 移动端加入的GTAO，相当于使用上一帧的深度计算  
+从代码中看，有SpatialFilter，没有时间上的累积(2021-11-24)   
 # HORIZONSEARCH_INTEGRAL_PIXEL_SHADER
 GTAOHorizonSearchIntegralPS  
 这个`Horizon`，一开始还以为是横向的意思，事实上指的应该是`HBAO`中的`Horizon`  
@@ -61,7 +62,20 @@ float TakeSmallerAbsDelta(float left, float mid, float right)
 实际上用了InterleavedGradientNoise，交叉梯度噪声，学到了  
 [使命召唤 http://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare](http://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare)  
 [https://bartwronski.com/2016/10/30/dithering-part-three-real-world-2d-quantization-dithering/](https://bartwronski.com/2016/10/30/dithering-part-three-real-world-2d-quantization-dithering/)  
-## ComputeInnerIntegral
+## ComputeInnerIntegral  
+```cpp
+half Gamma = acosFast_Half(CosAng) - PI_HALF;
+	half CosGamma = dot(ProjNormal, ViewDir) * RecipMag;
+	half SinGamma = CosAng * -2.0f;
+
+	// clamp to normal hemisphere 
+	Angles.x = Gamma + max(-Angles.x - Gamma, -(PI_HALF));
+	Angles.y = Gamma + min(Angles.y - Gamma, (PI_HALF));
+
+	half AO = ((LenProjNormal) *  0.25f *
+		((Angles.x * SinGamma + CosGamma - cos((2.0 * Angles.x) - Gamma)) +
+		(Angles.y * SinGamma + CosGamma - cos((2.0 * Angles.y) - Gamma))));
+```
 应该是对slice的积分，对应论文中如下公式  
 $$
 \hat{a}(\theta _1, \theta _2, \gamma)=\frac{1}{4}(-cos(2\theta _1-\gamma)+cos(\gamma)+2\theta _1sin(\gamma))\\
@@ -96,5 +110,72 @@ UE4也有用lut的方式来替代这里的计算
 * 3 `ComputeInnerIntegral`计算slice的积分
 * 4 循环2和3，加和
 
+不过这里最后乘了一个$\frac{2}{\pi}$，应该是为了之后的SpatialFilter来使用的
 
     
+## GTAOSpatialFilter
+对应文中`4.3 Implementation detail`中提到的`Spatio-temporal sampling approach`中的空间上Filter
+   
+按照论文中的说法，应该是基于深度的双边滤波，不过叫成基于深度权重的滤波更合适吧，因为单纯纹理坐标对应的权重是均匀的，影响最终权重的唯一因素只是深度  
+  
+函数开头是获取当前像素周围的深度差  
+```cpp
+half2 Y2Offset = half2(0, 2 * BufferSizeAndInvSize.w);
+half2 Y1Offset = half2(0, BufferSizeAndInvSize.w);
+
+half YM2Z = GetDeviceZAndAO(TextureUV - Y2Offset).x;
+half YM1Z = GetDeviceZAndAO(TextureUV - Y1Offset).x;
+half YP1Z = GetDeviceZAndAO(TextureUV + Y1Offset).x;
+half YP2Z = GetDeviceZAndAO(TextureUV + Y2Offset).x;
+
+// Get extrapolated point either side
+//获取外推点
+//这里没完全看懂，像是得到深度变化程度
+half C1 = abs((YM1Z + (YM1Z - YM2Z)) - ThisZ);
+half C2 = abs((YP1Z + (YP1Z - YP2Z)) - ThisZ);
+
+//类似GetNormal，获取深度变化较小的那一边的深度差
+if (C1 < C2)
+{
+	ZDiff.y = YM1Z - YM2Z;
+}
+else
+{
+	ZDiff.y = YP2Z - YP1Z;
+}
+```  
+然后循环进行加权累加  
+```cpp
+half DepthBase = ThisZ - (ZDiff.x * 2) - (ZDiff.y * 2);
+
+for (y = -2; y <= 2; y++)
+{
+	half PlaneZ = DepthBase;
+
+	for (x = -2; x <= 2; x++)
+	{
+		// Get value and see how much it compares to the centre with the gradients
+		half XDiff = abs(x);
+
+		half2 CurrentTextureUV = TextureUV + half2(x, y) * BufferSizeAndInvSize.zw;
+		half2 SampleZAndAO = GetDeviceZAndAO(CurrentTextureUV);
+
+		half Weight = 1.0f;
+		{
+			// Get the bilateral weight. This is a function of the difference in height between the plane equation and the base depth
+			// Compare the Z at this sample with the gradients 
+			half SampleZDiff = abs(PlaneZ - SampleZAndAO.x);
+
+			Weight = 1.0f - saturate(SampleZDiff*1000.0f);
+		}
+
+		SumAO += SampleZAndAO.y * Weight;
+		SumWeight += Weight;
+
+		PlaneZ += ZDiff.x;
+	}
+	DepthBase += ZDiff.y;
+}
+SumAO /= SumWeight;
+```  
+这么一看，我对于基于深度的双边滤波重构不太了解  
