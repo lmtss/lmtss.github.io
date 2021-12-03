@@ -75,3 +75,4 @@ $$
 <div align=center><img src="../../img/GTAO-figure-5.png"><div>中间：空间上双边滤波重构；右：使用指数累积buffer添加时域重投影</div></div>   
 
 图示5展示了空间和时间上的重构结果。我们选择了一个常规的采样方式而不是使用line sweep[Tim13a]，因为这更加符合我们的性能预算和目标质量(单个方向有12次步进)。Line-sweep环境光遮蔽能达成很高的质量，但是更多方向来避免条带，因为不可能按像素随机化方向(todo没太明白为什么不能)。Silvennoinen et al 提出了一种在xbox one上1280x720耗时1.6ms的方式。  
+
