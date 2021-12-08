@@ -1,3 +1,16 @@
+<head>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['$','$']],
+            displayMath: [['$$','$$'], ['\\(', '\\)']]
+            }
+        });
+    </script>
+</head>  
+
 `Engine/Shaders/Private/PostProcessAmbientOcclusionMobile.usf`  
 移动端加入的GTAO，相当于使用上一帧的深度计算  
 从代码中看，有SpatialFilter，没有时间上的累积(2021-11-24)   
