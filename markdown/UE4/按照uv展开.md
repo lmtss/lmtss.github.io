@@ -11,7 +11,7 @@ Section = LODModel.Sections[SectionIndex];
 NumPrimitives = Section.NumTriangles;
 FirstIndex = ...
 NumVertices = Section.MaxVertexIndex - Section.MinVertexIndex + 1;
-BaseVertexIndex = Section.MinVertexIndex;
+//BaseVertexIndex不清楚，这里我直接给了0
 //得到vertexbuffer(stream)
 VertexFactory = RenderData->LODVertexFactories[0].VertexFactory;
 VertexFactory.GetStreams(..,Default, VertexStreams);
@@ -32,7 +32,7 @@ RHICmdList.SetStreamSource(Stream.StreamIndex, Stream.VertexBuffer, Stream.Offse
 //Draw
 RHICmdList.DrawIndexedPrimitive(
     RHIIndexBuffer,
-    BaseVertexIndex,
+    0,
     0,
     NumVertices,
     FirstIndex,
@@ -65,6 +65,7 @@ void MainVS(
 )
 {
     float2 UV = Input.TexCoord.xy;
+    //可能需要uv=frac(uv)
     UV.y = 1.0 - uv.y;
     uv = uv * 2.0 - 1.0;    //为了和纹理对应
     Output.Position = float4(uv.x, uv.y, 0.0, 1.0); //按照uv展开
