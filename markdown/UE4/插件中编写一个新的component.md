@@ -39,7 +39,7 @@ AddShaderSourceDirectoryMapping(VirtualShaderDirectory, RealShaderDirectory);
 将组建绘制到屏幕上，首先要经过cpu的视锥剔除，要定制包围和的话，就要实现`CalcBounds`函数  
 ```cpp
 //这么写的话，基本上一定会在视锥内
-FBoxSphereBounds UYQPhysicsComponent::CalcBounds(const FTransform& LocalToWorld) const
+FBoxSphereBounds UMyComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
 	return FBoxSphereBounds(LocalToWorld.GetLocation(), FVector(1000000.0f, 1000000.0f, 1000000.0f), 1000000.0f);
 }
@@ -66,7 +66,35 @@ virtual uint32 GetMemoryFootprint(void) const override { return(sizeof(*this) + 
 
 uint32 GetAllocatedSize(void) const { return(FPrimitiveSceneProxy::GetAllocatedSize()); }
 ```
+## VertexFactory
+看起来就像一个封装了的vertex shader，还包括相关资源的处理。由于包含了vertex shader，所以需要将插件的`.uplugin`中的`LoadingPhase`设置为`PostConfigInit`  
+
+先搞一个简单的，参考`LocalVertexFactory.cpp`  
+```cpp
+class PLUGIN_API FMyVertexFactory : public FVertexFactory {
+	DECLARE_VERTEX_FACTORY_TYPE(FMyVertexFactory);
+public:
+
+	FMyVertexFactory(ERHIFeatureLevel::Type InFeatureLevel, const char* InDebugName)
+		: FVertexFactory(InFeatureLevel) {
+	}
+
+	static bool ShouldCompilePermutation(const FVertexFactoryShaderPermutationParameters& Parameters);
+
+	static void ModifyCompilationEnvironment(const FVertexFactoryShaderPermutationParameters& Parameters, FShaderCompilerEnvironment& OutEnvironment);
+
+	static void ValidateCompiledResult(const FVertexFactoryType* Type, EShaderPlatform Platform, const FShaderParameterMap& ParameterMap, TArray<FString>& OutErrors);
+
+	// FRenderResource interface.
+	virtual void InitRHI() override {}
+	virtual void ReleaseRHI() override {}
+};
+
+
+IMPLEMENT_VERTEX_FACTORY_TYPE_EX(FMyVertexFactory, "{shader路径}", true, true, true, true, true, true, true);
+```
 ## MeshBatch
+先写出比较简单的部分
 ```cpp
 struct FMeshBatch
 {
@@ -81,6 +109,33 @@ struct FMeshBatch
     //略
     ........
 }
+```  
+```cpp
+struct FMeshBatchElement
+{
+	/** 
+	 * Primitive uniform buffer RHI
+	 * Must be null for vertex factories that manually fetch primitive data from scene data, in which case FPrimitiveSceneProxy::UniformBuffer will be used.
+	 */
+    //如果在shader中显式地获取primitive的数据，那么这个应该是null
+	FRHIUniformBuffer* PrimitiveUniformBuffer;
+
+	const FIndexBuffer* IndexBuffer;
+
+	uint32 FirstIndex;          //应该是对应drawindexed中的StartIndexLocation
+	/** When 0, IndirectArgsBuffer will be used. */
+	uint32 NumPrimitives;
+
+	/** Number of instances to draw.  If InstanceRuns is valid, this is actually the number of runs in InstanceRuns. */
+	uint32 NumInstances;        //实例渲染的数量
+	uint32 BaseVertexIndex;     //应该是对应drawindexed中的BaseVertexLocation
+	uint32 MinVertexIndex;
+	uint32 MaxVertexIndex;
+	int32 UserIndex;
+
+    //略
+}
+
 ```
 接下来编写`GetDynamicMeshElements`函数  
 ```cpp
@@ -93,7 +148,7 @@ for (int32 ViewIndex = 0; ViewIndex < Views.Num(); ViewIndex++)
     
         //填充FMeshBatch
 
-        FMeshBatchElement& BatchElement = Mesh.Element[0];
+        FMeshBatchElement& BatchElement = Mesh.Elements[0];
 
         //填充BatchElement
 
