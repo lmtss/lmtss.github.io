@@ -35,6 +35,13 @@ AddShaderSourceDirectoryMapping(VirtualShaderDirectory, RealShaderDirectory);
  * ShapeComponents generate geometry that is used for collision detection but are not rendered, while StaticMeshComponents and SkeletalMeshComponents contain pre-built geometry that is rendered, but can also be used for collision detection.
  */
 ```    
+```cpp
+UMyComponent::UMyComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	bTickInEditor = true;
+}
+```
 ## bound
 将组建绘制到屏幕上，首先要经过cpu的视锥剔除，要定制包围和的话，就要实现`CalcBounds`函数  
 ```cpp
@@ -65,6 +72,22 @@ SIZE_T GetTypeHash() const override
 virtual uint32 GetMemoryFootprint(void) const override { return(sizeof(*this) + GetAllocatedSize()); }
 
 uint32 GetAllocatedSize(void) const { return(FPrimitiveSceneProxy::GetAllocatedSize()); }
+
+FMySceneProxy(const UMyComponent* InComponent)
+	: FPrimitiveSceneProxy(InComponent)
+	, VertexFactory(GetScene().GetFeatureLevel(), "MyVertexFactory")
+{
+	ENQUEUE_RENDER_COMMAND(Init)(
+		[this](FRHICommandListImmediate& RHICmdList)
+		{
+			VertexFactory.InitResource();
+		});
+}
+
+~FMySceneProxy() 
+{
+	VertexFactory.ReleaseResource();
+}
 ```
 ## VertexFactory
 看起来就像一个封装了的vertex shader，还包括相关资源的处理。由于包含了vertex shader，所以需要将插件的`.uplugin`中的`LoadingPhase`设置为`PostConfigInit`  
