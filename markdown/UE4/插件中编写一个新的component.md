@@ -92,7 +92,20 @@ public:
 
 
 IMPLEMENT_VERTEX_FACTORY_TYPE_EX(FMyVertexFactory, "{shader路径}", true, true, true, true, true, true, true);
-```
+```  
+通常VertexFactory存储在SceneProxy上面
+## VertexFactory-Shader
+通常在`IMPLEMENT_VERTEX_FACTORY_TYPE_EX`用到的shader文件以`ush`结尾，为BasePassShader提供一些函数、一些结构体声明  
+结构体  
+* `FVertexFactoryInput` 基本是IA输入，顶点缓冲的值，也包括`VertexID`
+* `FVertexFactoryIntermediates` 只在vs中使用，暂存的中间量，应该是为了vertexfactory这个设计搞出来的
+* `FVertexFactoryInterpolantsVSToPS` 顾名思义，VS传给PS的插值
+
+函数
+* `VertexFactoryGetWorldPosition` 
+* `GetMaterialVertexParameters` 构造顶点参数，返回类型`FMaterialVertexParameters`，`FMaterialVertexParameters`的声明位于材质模板，相当于给材质编辑器使用，一些编辑器中使用的节点就是从这里取值，用custom节点也可以直接取到
+* `GetMaterialPixelParameters` 基本同上，只不过是ps
+* `GetVertexFactoryIntermediates` 顾名思义
 ## MeshBatch
 先写出比较简单的部分
 ```cpp
