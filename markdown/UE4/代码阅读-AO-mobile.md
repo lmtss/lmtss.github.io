@@ -143,7 +143,6 @@ half YP2Z = GetDeviceZAndAO(TextureUV + Y2Offset).x;
 
 // Get extrapolated point either side
 //获取外推点
-//这里没完全看懂，像是得到深度变化程度
 half C1 = abs((YM1Z + (YM1Z - YM2Z)) - ThisZ);
 half C2 = abs((YP1Z + (YP1Z - YP2Z)) - ThisZ);
 
@@ -192,4 +191,4 @@ for (y = -2; y <= 2; y++)
 }
 SumAO /= SumWeight;
 ```  
-这里用5x5的像素构建了一个平面，用构建的这个平面上的深度来求权重  
+这里用5x5的像素构建了一个平面，用构建的这个平面上的深度来求权重，应该是要符合连续高度的假设吧。  
