@@ -128,7 +128,11 @@ IMPLEMENT_VERTEX_FACTORY_TYPE_EX(FMyVertexFactory, "{shader路径}", true, true,
 * `VertexFactoryGetWorldPosition` 
 * `GetMaterialVertexParameters` 构造顶点参数，返回类型`FMaterialVertexParameters`，`FMaterialVertexParameters`的声明位于材质模板，相当于给材质编辑器使用，一些编辑器中使用的节点就是从这里取值，用custom节点也可以直接取到
 * `GetMaterialPixelParameters` 基本同上，只不过是ps
-* `GetVertexFactoryIntermediates` 顾名思义
+* `GetVertexFactoryIntermediates` 顾名思义   
+
+一个需求是只编译需要的材质，否则可能增加一个`VertexFactory`就要增加一份变体，即使这个材质永远不会用到这个`VertexFactory`  
+然而材质不提供标注的功能。。  
+在早一些的版本，ShouldCompilePermutation能够访问到材质，但是新的版本中得到的是`FVertexFactoryShaderPermutationParameters`
 ## MeshBatch
 先写出比较简单的部分
 ```cpp
