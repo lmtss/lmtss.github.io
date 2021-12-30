@@ -1,11 +1,17 @@
 # 大概结构
-最终结果来自于散射和水下的SceneColor的加和，而散射又是方向光散射和环境光散射的加和
+<div align=center><img src="../../img/SingleLayerWater.png"><div>一般的光照都是只有surface部分且加上天光漫反射</div></div>    
+
 
 # Phase Function
 `Phase Function`描述了体积对不同方向的散射强度，根据参数，可能所有方向都一致；也有可能是和光线入射方向一致的方向很强，其他方向很弱   
 
+<div align=center><img src="../../img/PhaseFunction.png"><div>右边的摄像机接收的散射强度大</div></div>    
+
+
+
 下面是UE中的代码
 ```cpp
+//各项同性
 float IsotropicPhase()
 {
 	return 1.0f / (4.0f * PI);
@@ -46,10 +52,62 @@ $$
 p(\theta , k)=\frac{1-k^2}{4\pi (1+k\cos\theta)^2}, \ \ \ \ \ \ \ k\approx 1.55g-0.55g^3
 $$  
 
-在UE中，`phase function`得出的结果会和方向光相乘  
+在UE中，这里的`phase function`得出的结果会和方向光相乘得到Sun散射  
 ```cpp
 //移动端中，SunIlluminance是ResolvedView.DirectionalLightColor.rgb * PI;	
 //times PI because it is divided by PI on CPU (=luminance) and we want illuminance here. 
 //
 float3 SunScattLuminance = DirLightPhaseValue * SunIlluminance;
+```  
+而环境光则会和各项同性的Phase相乘得到环境散射
+```cpp
+float3 AmbScattLuminance = IsotropicPhase()   * AmbiantIlluminance;
+```
+# Transmittance
+## DepthFade
+比较简单的实现衰减(水越深越暗)的方式是用材质编辑器中的`DepthFade`节点，然后给美术调参数  
+`DepthFade`节点中的公式为  
+$$
+Opacity*Saturate(\frac{SceneDepth-PixelDepth}{FadeDistance})
+$$  
+SceneDepth相当于是水下不透明物体的深度，来自深度纹理(或FramebufferFetch)。  
+PixelDepth是水面的深度，也就是水的网格体的深度。  
+SceneDepth与PixelDepth相差越大，表示水深，表现'水本身的颜色'；相应的水越浅，alpha越低，越表现水下的SceneColor
+
+## SingleLayerWater中的透光率Transmittance
+顾名思义，表示的是透过光的强度，和上面的fade是相反的概念。  
+在Shader中，存在两个不同的透光率，一个是沿着视线的透光率，另一个是沿着世界空间的z轴的透光率
+$$
+Transmittance_0=e^{-(Scatter+Absorption)*max(0,SceneDepth-WaterDepth)}\\
+Transmittance_1=e^{-(Scatter+Absorption)*max(0,WaterTopZ - SceneZ)}\\
+$$  
+第一个比较好理解，当水下的场景反射的光线射出水面到眼睛的过程中要收到水的衰减。  
+第二个透光率计算的原因是，在计算水下的场景，比如在之前渲染的不透明物体的时候，并没有计算入射光射入水体时的衰减，所以在这里要计算一遍。这个透光率是用水面的高度减去水下物体的高度。
+
+<div align=center><img src="../../img/SingleLayerWater-1.png"><div>读取到的SceneColor没有计算透光率1</div></div>    
+
+# 体积光
+有了散射和Transmittance，就能计算体积光的最终结果  
+```cpp
+float3 ScatteredLuminance = ScatteringCoeff * (AmbScattLuminance + SunScattLuminance * DirectionalLightShadow);
+
+//Transmittance是上面提到的第一个透光率
+ScatteredLuminance = (ScatteredLuminance - ScatteredLuminance * Transmittance) / ExtinctionCoeffSafe;  
+
+//...
+
+//BehindWaterSceneLuminance是SceneColor，如果不能获取SceneColor纹理的话，此处为0
+Output.Luminance = WaterVisibility * (ScatteredLuminance + Transmittance * (BehindWaterSceneLuminance* ColorScaleBehindWater));
+Output.WaterToSceneTransmittance = Transmittance;
+
+//MeanTransmittanceToLightSources上面提到的第二个透光率
+Output.WaterToSceneToLightTransmittance = Transmittance * MeanTransmittanceToLightSources;
+```  
+其中`WaterVisibility`就是`1-Opacity`  
+`BehindWaterSceneLuminance`来自SceneColor
+
+最后体积光加到最终结果上，如果是移动端根据透光率改变透明度，以此来混合SceneColor，也就是说BehindWaterSceneLuminance为0；如果不是移动端，则是通过SceneColor纹理来获取，并在计算水体体积光的时候混合。
+```cpp
+Color += WaterLighting.Luminance;
+ShadingModelContext.Opacity = 1.0 - ((1.0 - ShadingModelContext.Opacity) * dot(WaterLighting.WaterToSceneToLightTransmittance, float3(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0)));
 ```
