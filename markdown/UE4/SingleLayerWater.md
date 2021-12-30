@@ -110,4 +110,5 @@ Output.WaterToSceneToLightTransmittance = Transmittance * MeanTransmittanceToLig
 ```cpp
 Color += WaterLighting.Luminance;
 ShadingModelContext.Opacity = 1.0 - ((1.0 - ShadingModelContext.Opacity) * dot(WaterLighting.WaterToSceneToLightTransmittance, float3(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0)));
-```
+```  
+能够看出`WaterToSceneToLightTransmittance`是一个float3，而转为alpha就成了float。  
