@@ -112,3 +112,9 @@ Color += WaterLighting.Luminance;
 ShadingModelContext.Opacity = 1.0 - ((1.0 - ShadingModelContext.Opacity) * dot(WaterLighting.WaterToSceneToLightTransmittance, float3(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0)));
 ```  
 能够看出`WaterToSceneToLightTransmittance`是一个float3，而转为alpha就成了float。  
+
+
+# 距离单位
+rtr4中计算光学深度的时候用的是米，而UE用的是cm。这样会导致参数需要很小很小
+# alpha
+移动端中的alpha，一定不会为0，但事实上，最浅的地方应该是可以为0的
