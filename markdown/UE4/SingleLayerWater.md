@@ -118,3 +118,5 @@ ShadingModelContext.Opacity = 1.0 - ((1.0 - ShadingModelContext.Opacity) * dot(W
 rtr4中计算光学深度的时候用的是米，而UE用的是cm。这样会导致参数需要很小很小
 # alpha
 移动端中的alpha，一定不会为0，但事实上，最浅的地方应该是可以为0的
+# 三维向量 vs 一维
+由于各种原因，当前与scenecolor混合时，只能用alpha混合，这意味着只能是scenecolor减弱。而理想中，scenecolor的rgb分布也会随着水体颜色而发生变化
