@@ -12,3 +12,6 @@
 关于图形学中的有向距离场，可以看[JBS06](https://www.cs.swan.ac.uk/~csmark/PDFS/df.pdf)做一个概览。   
 在基于物理的动画的领域，SDF十分适合做碰撞检测。SDF能够快速地进行与潜在碰撞物体的距离查询。SDF的梯度，能够用来找到通往表面的最短路径，能被用来作为碰撞反馈的接触法线。[BMF03](https://www.cs.ubc.ca/~rbridson/docs/cloth2003.pdf)和[FSG03](https://www.graphicon.ru/html/2003/Proceedings/Technical/paper495.pdf)使用SDF解决布料和刚体之间的碰撞。[XB14a](https://viterbi-web.usc.edu/~jbarbic/ccd/XuBarbicVRIPHYS2014.pdf)提出了一个用于刚体的连续碰撞检测。  
 在本文中，我们还展示了我们新的 SDF 表示在刚体碰撞检测应用领域的使用。然而，通过[MZS*11](https://dl.acm.org/doi/10.1145/2010324.1964932)提出的修改，我们的SDF也能被应用于刚体-变形物体、变形物体-刚体之间的碰撞检测。  
+
+# 3
+## 3.2 

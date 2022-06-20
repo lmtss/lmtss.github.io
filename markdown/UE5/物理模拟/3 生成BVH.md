@@ -203,3 +203,10 @@ using atomic counters—the first thread terminates immediately while the second
 # 结尾
 BVH相关的文章还是挺多，我用的算法只是早些年的简单的算法，还有有各式各样的改进方向还需要学习。之后也会继续学习关于碰撞检测的知识，有时间会发出来分享。 
 
+# 想到的改进
+叶子节点采用三角形，而是hash网格和三角形的结合，这样应该能有效减少构建BVH时的开销  
+另一个想法是优化排序
+
+* 看一下CUDA的thrust中排序实现
+* 简化DownSweep，不使用InValue缓冲，因为在这个做法中，InValue其实是个`y=x`函数
+* 内存占用应该优化一下
