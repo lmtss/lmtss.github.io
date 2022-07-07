@@ -5,7 +5,7 @@
 然后据此来调用`GenerateEuclideanTethers`或者`GenerateGeodesicTethers`来计算系绳  
 
 ## 动力学节点
-
+`ClothPhysicalMeshData.cpp`  `FClothPhysicalMeshData::CalculateTethers`
 
 ## 构成约束
 
@@ -17,4 +17,6 @@ for 连通域 in 连通域列表
         找距离最近的固定点 i以及距离 d
 
     将pair[d, i]填入列表
-```
+```  
+
+一个非固定点的LRA约束有限制，默认最多4个  
