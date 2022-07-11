@@ -5,7 +5,7 @@
 [Adaptive cloud simulation using position based fluids](https://www.semanticscholar.org/paper/Adaptive-cloud-simulation-using-position-based-Barbosa-Dobashi/0c5291ffb6e3c79fec20cbec45ffacff7dbbf901)  
 
 
-[Real-time high-quality surface rendering for large scale particle-based fluids](https://www.semanticscholar.org/paper/Real-time-high-quality-surface-rendering-for-large-Xiao-Zhang/a04191cc08810e4ba2a69e1a4c5679f2a5890b1c)  
+渲染[Real-time high-quality surface rendering for large scale particle-based fluids](https://www.semanticscholar.org/paper/Real-time-high-quality-surface-rendering-for-large-Xiao-Zhang/a04191cc08810e4ba2a69e1a4c5679f2a5890b1c)  
 
 [Muscle Simulation with Extended Position Based Dynamics](https://www.semanticscholar.org/paper/Muscle-Simulation-with-Extended-Position-Based-Romeo-Monteagudo/7e4b1f71b1fdf0f7d6977fdfa1199a9007f7458b)   
 
@@ -17,7 +17,7 @@
 
 [https://www.math.ucla.edu/~minchen/](https://www.math.ucla.edu/~minchen/)  
 
-[冲击波](https://doc-08-b4-docs.googleusercontent.com/docs/securesc/vacm1e2migf3rc1q2nh0r7svo24j6lgr/ukcc9h6tbhu6f2l48l83m2k9c5esana8/1655546250000/05284516675464521730/05371893217927038306/1jlFb7EJbLdPjnNaIuqO-Ow0cP-Dgxgqk?e=view&ax=ACxEAsZC9kanrv4HLRBuYFpNcI8F-c9vLfH30ygys6-ka7HXOoh92S1svZwcYNPw3h6Lk6DDsH8KDrP6izQ6SLrg6HW_4z53JflsYeJNAXKGNEf3GaetijIwYPxDFXO4N_izDgezfPSxCVixpvR4WlDSbOrooSxG1L1fcWSAxOhz-obvDI0QIDUmTdoNLK4A3EIhDE5Kcpmc_xRGlWv52pOJXjhUGpM0Fd6cVW_MuhAtHHmU3THMGlwIlAZ9NUBtr-lnshnxoyb_ExEToUH81afkn0b9SACGR5YNkr4dGqYeAK4nYCAZZud9CuhHy9813DGFWXdPIx3QEzSLBS6FQ89SrhmBFoSbUdu3-kqs65vi_DzInMCa2xKNIX9bN1byDPTj7wy-FxSCb7vvYDXUakKd24GC9f2biQySYBMetZt_xnoUSuLz81LWE4ENxxymU74YMCEqsn_6rvIOtnMlpo5_CajZMKzDARPFYmp-w0P_0xqsvxgbhbZ1Me2tFR9d748ZPFcu9NQmSE1_tpRwj5xEJXavYDIvWShFNeWpRbyTZj7OhGEDepLYns-PL68g2-s4SwE8VHdhPTi456anyi8WaqbbuyObUJbMpTSli0sflqKHnOVkMVIY976qGZ6xmMlwH_Yx7KxUqVTKPLkJXn7UD2cKPLbg0zwmPpZ2fdYZq7kWDLQqrHlU5Jrm_CwLeJEHHzXTUmwOE-0&authuser=0&nonce=va44gdq6ugqrs&user=05371893217927038306&hash=9s76ahr960a17gf715060oc56phq0ugm)   
+[冲击波 An Efficient B-Spline Lagrangian/Eulerian Method for Compressible Flow, Shock Waves, and Fracturing Solids](https://dl.acm.org/doi/10.1145/3519595)   
 
 
 [GigaVoxels](http://maverick.inria.fr/Publications/2013/Gue13/S3335_PascalGuehl.pdf)  
@@ -28,3 +28,9 @@
 
 
 LBM流体
+
+
+[Detailed Rigid Body Simulation with Extended Position Based Dynamics](https://www.semanticscholar.org/paper/Detailed-Rigid-Body-Simulation-with-Extended-Based-M%C3%BCller-Macklin/a3034e211b4ea7b66059c85c57a4e6335e56fe07)  
+
+
+[Rigid Body Joints in Real-Time Unified Particle Physics](http://www.zemris.fer.hr/~zeljkam/radovi/18_EG.pdf)
