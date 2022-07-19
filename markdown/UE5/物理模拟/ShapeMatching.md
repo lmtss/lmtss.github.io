@@ -66,4 +66,39 @@ struct FVoxelizeVolumePrimitiveGSToPS
 	float4 OutPosition : SV_POSITION;
 	uint SliceIndex : SV_RenderTargetArrayIndex;
 };
-```
+```  
+
+不考虑`USING_VERTEX_SHADER_LAYER`的情况，这个shader的VS向GS输出顶点的视空间位置。   
+GS的输入是三角形，输出是各个slice上的三角形。   
+GS  
+```cpp
+// Clone the triangle to each slice
+for (int SliceIndex = ClosestSliceIndex; SliceIndex <= FurthestSliceIndex; SliceIndex++)
+{
+
+    UNROLL
+    for (uint VertexIndex = 0; VertexIndex < NUM_INPUT_VERTICES; VertexIndex++)
+    {
+            // Use vertex positions that bound this slice of the sphere in view space
+            ViewSpaceVertices[VertexIndex] = ViewSpacePrimitiveVolumeOrigin.xy + PrimitiveCenterToVertex[VertexIndex] * SliceRadius;
+    }
+
+    UNROLL
+    for (uint VertexIndex = 0; VertexIndex < NUM_INPUT_VERTICES; VertexIndex++)
+    {
+        FVoxelizeVolumePrimitiveGSToPS Output;
+
+        Output.SliceIndex = SliceIndex;
+
+        float3 ViewSpaceVertexPosition = float3(ViewSpaceVertices[VertexIndex], SliceDepth);
+        Output.OutPosition = mul(float4(ViewSpaceVertexPosition, 1), VoxelizeVolumePass.ViewToVolumeClip);
+        Output.FactoryInterpolants = Inputs[VertexIndex].FactoryInterpolants;
+
+        OutStream.Append(Output);
+
+    }
+
+    OutStream.RestartStrip();
+}
+```  
+每个slice都对应一个三角形   
