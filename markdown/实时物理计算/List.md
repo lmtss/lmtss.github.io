@@ -33,4 +33,7 @@ LBM流体
 [Detailed Rigid Body Simulation with Extended Position Based Dynamics](https://www.semanticscholar.org/paper/Detailed-Rigid-Body-Simulation-with-Extended-Based-M%C3%BCller-Macklin/a3034e211b4ea7b66059c85c57a4e6335e56fe07)  
 
 
-[Rigid Body Joints in Real-Time Unified Particle Physics](http://www.zemris.fer.hr/~zeljkam/radovi/18_EG.pdf)
+[Rigid Body Joints in Real-Time Unified Particle Physics](http://www.zemris.fer.hr/~zeljkam/radovi/18_EG.pdf)  
+
+
+AMR 自适应网格 [wiki](https://en.wikipedia.org/wiki/Adaptive_mesh_refinement)
